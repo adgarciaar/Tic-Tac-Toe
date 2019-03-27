@@ -4,44 +4,41 @@
 
 .globl main
 .data
-	#msg01: .asciiz "\n|\t|\t|\t|\n"
-	#msg02: .asciiz "|\t|\t|\t|\n"
-	#msg03: .asciiz "|\t|\t|\t|\n"
+
 	turnoJugador1: .asciiz "\nTurno jugador 1 (X)\n"
 	turnoJugador2: .asciiz "\nTurno jugador 2 (O)\n"
-	digitarPosicion: .asciiz "Digite posición:\n"
+	digitarPosicion: .asciiz "\nDigite posición:\n"
 	finalizacion: .asciiz "Adiós\n"
 	posicionIncorrecta: .asciiz "Posición incorrecta. Vuelta a introducirla\n"
 	simboloX: .asciiz "  X  "
 	simboloO: .asciiz "  O  "
 	vacio: .asciiz "     "
 	barra: .asciiz "|"
-	tabulador: .asciiz "\t"
 	saltoLinea: .asciiz "\n"
-	impr2: .asciiz "imprimirPos2"
-.text
+
+.text #código de aquí en adelante
 
 main:
 
-	li $t1, 2 # asignar valor a casilla 1 (t1)
-	li $t2, 2 # asignar valor a casilla 2 (t2)
+	li $t1, 0 # asignar valor a casilla 1 (t1)
+	li $t2, 0 # asignar valor a casilla 2 (t2)
 	li $t3, 0 # asignar valor a casilla 3 (t3)
 	li $t4, 0 # asignar valor a casilla 4 (t4)
 	li $t5, 0 # asignar valor a casilla 5 (t5)
 	li $t6, 0 # asignar valor a casilla 6 (t6)
 	li $t7, 0 # asignar valor a casilla 7 (t7)
 	li $t8, 0 # asignar valor a casilla 8 (t8)
-	li $t9, 1 # asignar valor a casilla 9 (t9)
+	li $t9, 0 # asignar valor a casilla 9 (t9)
 	
 	jal imprimirTabla
 	
 	jal imprimirTurnoJugador1
-	
+	jal pedirPosicionJugador1
 	
 	#comprobar que se inicializaron las casillas
 	#li $v0, 1 # Code to print an integer is 1
 	#move $a0, $t8 # Pass argument to system in $a0
-	#syscall # print the string	
+	#syscall # print the string
 		
 	b fin
 	
@@ -60,8 +57,10 @@ imprimirTurnoJugador2:
 	jr $ra #return
 
 pedirPosicionJugador1:
-	#pedir posición jugada jugador 1
+	li $a2, 1 #asignar a a2 el valor de jugador 1
 
+	#pedir posición jugada jugador 1
+	
 	la $a0 digitarPosicion # load address of msg4. into $a0
 	li $v0 4 # system call code for print_str
 	#syscall # print the string
@@ -70,12 +69,14 @@ pedirPosicionJugador1:
 	syscall # reads the value into $v0
 	
 	bltz $v0, fin # si el valor es menor a cero se va a fin
-	beqz $v0, fin_posicion # si el valor es igual a cero se va a fin
-	#beqz $v0, rectificar_posicion # si el valor es igual a cero
+	beqz $v0, fin # si el valor es igual a cero se va a fin
+	bgt $v0, 9, rectificarPosicion # si el valor es mayor a 9
 	
 	jr $ra #return
 
 pedirPosicionJugador2:
+	li $a2, 2 #asignar a a2 el valor de jugador 2
+
 	#pedir posición jugada jugador 2
 
 	la $a0 digitarPosicion # load address of msg4. into $a0
@@ -86,7 +87,8 @@ pedirPosicionJugador2:
 	syscall # reads the value into $v0
 	
 	bltz $v0, fin # si el valor es menor a cero se va a fin
-	beqz $v0, rectificar_posicion # si el valor es igual a cero
+	beqz $v0, fin # si el valor es igual a cero
+	bgt $v0, 9, rectificarPosicion # si el valor es mayor a 9
 	
 	jr $ra #return
 	
@@ -169,7 +171,9 @@ imprimirX:
 	jr $ra #return
 	
 rectificarPosicion:
-	
+	la $a0 posicionIncorrecta # load address of msg8. into $a0
+	li $v0 4 # system call code for print_str
+	syscall # print the string
 
 fin:
 	#imprimir adiós
