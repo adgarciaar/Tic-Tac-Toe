@@ -3,7 +3,7 @@
 # | 7 | 8 | 9 |
 
 #1 en la casilla para X
-#2 en la casilla para O
+#-1 en la casilla para O
 
 #.globl main
 
@@ -37,17 +37,53 @@ main:
 	li $t8, 0 # asignar valor a casilla 8 (t8)
 	li $t9, 0 # asignar valor a casilla 9 (t9)
 	
-	jal imprimirTabla
+	jal imprimirTabla #imprimir tabla inicial
+	
+	#turno 1
 	
 	jal imprimirTurnoJugador1
 	jal pedirPosicionJugador1	
 	
 	jal imprimirTabla
 	
+	jal validarTresEnLinea
+	
+	#turno 2
+	
 	jal imprimirTurnoJugador2
 	jal pedirPosicionJugador2
 	
 	jal imprimirTabla
+	
+	jal validarTresEnLinea
+	
+	#turno 3
+	
+	jal imprimirTurnoJugador1
+	jal pedirPosicionJugador1
+	
+	jal imprimirTabla
+	
+	jal validarTresEnLinea
+	
+	#turno 4
+	
+	jal imprimirTurnoJugador2
+	jal pedirPosicionJugador2
+	
+	jal imprimirTabla
+	
+	jal validarTresEnLinea
+	
+	#turno 4
+	
+	jal imprimirTurnoJugador1
+	jal pedirPosicionJugador1
+	
+	jal imprimirTabla
+	
+	jal validarTresEnLinea
+	
 	
 	#comprobar que se inicializaron las casillas
 	#li $v0, 1 # Code to print an integer is 1
@@ -101,7 +137,7 @@ imprimirTabla:
 	
 imprimirPos:	
 	beq $a1, 1, imprimirX
-	beq $a1, 2, imprimirO
+	beq $a1, -1, imprimirO
 	beq $a1, 0, imprimirVacio
 
 imprimirBarra:
@@ -164,6 +200,8 @@ pedirPosicionJugador1:
 	beqz $v0, fin # si el valor es igual a cero se va a fin
 	bgt $v0, 9, rectificarPosicion # si el valor es mayor a 9
 	
+	li $a3, 1 #asignar a a3 valor de 1 para adicionar una X en la casilla
+	
 	beq $v0, 1, verificarCasilla1 # si es casilla 1
 	beq $v0, 2, verificarCasilla2 # si es casilla 2
 	beq $v0, 3, verificarCasilla3 # si es casilla 3
@@ -190,6 +228,8 @@ pedirPosicionJugador2:
 	beqz $v0, fin # si el valor es igual a cero
 	bgt $v0, 9, rectificarPosicion # si el valor es mayor a 9
 	
+	li $a3, -1 #asignar a a3 valor de -1 para adicionar un O en la casilla
+	
 	beq $v0, 1, verificarCasilla1 # si es casilla 1
 	beq $v0, 2, verificarCasilla2 # si es casilla 2
 	beq $v0, 3, verificarCasilla3 # si es casilla 3
@@ -204,63 +244,63 @@ verificarCasilla1:
 	beq $t1, 0, _adicionarSimbolo1 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo1:
-	move $t1, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t1, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 
 verificarCasilla2:
 	beq $t2, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo2:
-	move $t2, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t2, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 
 verificarCasilla3:
 	beq $t3, 0, _adicionarSimbolo3 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo3:
-	move $t3, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t3, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla4:
 	beq $t4, 0, _adicionarSimbolo4 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo4:
-	move $t4, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t4, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla5:
 	beq $t5, 0, _adicionarSimbolo5 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo5:
-	move $t5, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t5, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla6:
 	beq $t6, 0, _adicionarSimbolo6 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo6:
-	move $t6, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t6, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla7:
 	beq $t7, 0, _adicionarSimbolo7 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo7:
-	move $t7, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t7, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla8:
 	beq $t8, 0, _adicionarSimbolo8 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo8:
-	move $t8, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t8, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla9:
 	beq $t9, 0, _adicionarSimbolo9 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo9:
-	move $t9, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
+	move $t9, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 rectificarPosicion:
@@ -276,21 +316,21 @@ validarTresEnLinea:
 	add $t0,$t1,$t2 #sumar
 	add $t0,$t0,$t3 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	li $t0, 0 # asignar valor de 0 a t1
 	# validar | 4 | 5 | 6 |
 	add $t0,$t4,$t5 #sumar
 	add $t0,$t0,$t6 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	li $t0, 0 # asignar valor de 0 a t1
 	# validar | 7 | 8 | 9 |
 	add $t0,$t7,$t8 #sumar
 	add $t0,$t0,$t9 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	li $t0, 0 # asignar valor de 0 a t1
 	#validar
@@ -300,7 +340,7 @@ validarTresEnLinea:
 	add $t0,$t1,$t4 #sumar
 	add $t0,$t0,$t7 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	li $t0, 0 # asignar valor de 0 a t1
 	#validar
@@ -310,7 +350,7 @@ validarTresEnLinea:
 	add $t0,$t2,$t5 #sumar
 	add $t0,$t0,$t8 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	li $t0, 0 # asignar valor de 0 a t1
 	#validar
@@ -320,7 +360,7 @@ validarTresEnLinea:
 	add $t0,$t3,$t6 #sumar
 	add $t0,$t0,$t9 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	li $t0, 0 # asignar valor de 0 a t1
 	#validar
@@ -330,7 +370,7 @@ validarTresEnLinea:
 	add $t0,$t1,$t5 #sumar
 	add $t0,$t0,$t9 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	li $t0, 0 # asignar valor de 0 a t1
 	#validar
@@ -340,7 +380,9 @@ validarTresEnLinea:
 	add $t0,$t7,$t5 #sumar
 	add $t0,$t0,$t3 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
-	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	jr $ra #return
 	
 ganaJugador1:
 	la $a0 ganaPartidaJugador1 # load address of msg8. into $a0
