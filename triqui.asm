@@ -5,8 +5,10 @@
 #1 en la casilla para X
 #2 en la casilla para O
 
-.globl main
-.data
+#.globl main
+
+.data # Section where data is stored in memory (allocated in RAM), similar to
+      # variables in higher level languages
 
 	turnoJugador1: .asciiz "\nTurno jugador 1 (X)\n"
 	turnoJugador2: .asciiz "\nTurno jugador 2 (O)\n"
@@ -18,6 +20,8 @@
 	vacio: .asciiz "     "
 	barra: .asciiz "|"
 	saltoLinea: .asciiz "\n"
+	ganaPartidaJugador1: .asciiz "\nGana el jugador 1\n"
+	ganaPartidaJugador2: .asciiz "\nGana el jugador 2\n"
 
 .text #código de aquí en adelante
 
@@ -265,6 +269,90 @@ rectificarPosicion:
 	syscall # print the string
 	beq $a2, 1, pedirPosicionJugador1 # si el valor es 1 corresponde a jugador 1
 	beq $a2, 2, pedirPosicionJugador2 # si el valor es 1 corresponde a jugador 1
+	
+validarTresEnLinea:
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 1 | 2 | 3 |
+	add $t0,$t1,$t2 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 4 | 5 | 6 |
+	add $t0,$t4,$t5 #sumar
+	add $t0,$t0,$t6 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 7 | 8 | 9 |
+	add $t0,$t7,$t8 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 | 
+	# | 4 |
+	# | 7 | 
+	add $t0,$t1,$t4 #sumar
+	add $t0,$t0,$t7 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	add $t0,$t2,$t5 #sumar
+	add $t0,$t0,$t8 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	add $t0,$t3,$t6 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	add $t0,$t1,$t5 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	add $t0,$t7,$t5 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
+	beq $t0, 6, ganaJugador2 # si la suma da 6 entonces gana jugador 2
+	
+ganaJugador1:
+	la $a0 ganaPartidaJugador1 # load address of msg8. into $a0
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	b fin
+
+ganaJugador2:
+	la $a0 ganaPartidaJugador2 # load address of msg8. into $a0
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	b fin
 
 fin:
 	#imprimir adiós
