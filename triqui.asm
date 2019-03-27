@@ -36,11 +36,12 @@ main:
 	jal imprimirTabla
 	
 	jal imprimirTurnoJugador1
-	jal pedirPosicionJugador1
+	jal pedirPosicionJugador1	
 	
-	#li $v0, 1 # Code to print an integer is 1
-	#move $a0, $t3 # Pass argument to system in $a0
-	#syscall # print the string
+	jal imprimirTabla
+	
+	jal imprimirTurnoJugador2
+	jal pedirPosicionJugador2
 	
 	jal imprimirTabla
 	
@@ -210,49 +211,49 @@ _adicionarSimbolo2:
 	jr $ra #return
 
 verificarCasilla3:
-	beq $t3, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
+	beq $t3, 0, _adicionarSimbolo3 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo3:
 	move $t3, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla4:
-	beq $t4, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
+	beq $t4, 0, _adicionarSimbolo4 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo4:
 	move $t4, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla5:
-	beq $t5, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
+	beq $t5, 0, _adicionarSimbolo5 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo5:
 	move $t5, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla6:
-	beq $t6, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
+	beq $t6, 0, _adicionarSimbolo6 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo6:
 	move $t6, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla7:
-	beq $t7, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
+	beq $t7, 0, _adicionarSimbolo7 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo7:
 	move $t7, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla8:
-	beq $t8, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
+	beq $t8, 0, _adicionarSimbolo8 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo8:
 	move $t8, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #return
 	
 verificarCasilla9:
-	beq $t9, 0, _adicionarSimbolo2 # si la casilla está en 0 (se puede adicionar)
+	beq $t9, 0, _adicionarSimbolo9 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo9:
 	move $t9, $a2 #asignar a la casilla 1 el valor de jugador (1 o 2)
