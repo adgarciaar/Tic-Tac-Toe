@@ -1,5 +1,7 @@
 # | 1 | 2 | 3 |
+#  --- --- ---
 # | 4 | 5 | 6 |
+#  --- --- ---
 # | 7 | 8 | 9 |
 
 #1 en la casilla para X
@@ -26,6 +28,7 @@
 	bienvenido: .asciiz "\nBienvenido\n"
 	digiteNuevoJuego: .asciiz "\nDigite 1 para nuevo juego\n"
 	digiteSalir: .asciiz "Digite 2 para salir\n"
+	barrasHorizontales: .asciiz "-------------------"
 
 .text #código de aquí en adelante
 
@@ -121,6 +124,8 @@ imprimirTabla:
 	sw $ra, 0($sp) #save return address to stack
 	
 	jal imprimirSaltoLinea
+	jal imprimirBarrasHorizontales
+	jal imprimirSaltoLinea
 	jal imprimirBarra
 	move $a1, $t1 #asignar a a1 el valor de casilla 1
 	jal imprimirPos #imprimir posición 1
@@ -131,6 +136,8 @@ imprimirTabla:
 	move $a1, $t3 #asignar a a1 el valor de casilla 3
 	jal imprimirPos #imprimir posición 3
 	jal imprimirBarra
+	jal imprimirSaltoLinea
+	jal imprimirBarrasHorizontales
 	jal imprimirSaltoLinea
 	jal imprimirBarra
 	move $a1, $t4 #asignar a a1 el valor de casilla 4
@@ -143,6 +150,8 @@ imprimirTabla:
 	jal imprimirPos #imprimir posición 6
 	jal imprimirBarra
 	jal imprimirSaltoLinea
+	jal imprimirBarrasHorizontales
+	jal imprimirSaltoLinea
 	jal imprimirBarra
 	move $a1, $t7 #asignar a a1 el valor de casilla 7
 	jal imprimirPos #imprimir posición 7
@@ -153,7 +162,9 @@ imprimirTabla:
 	move $a1, $t9 #asignar a a1 el valor de casilla 9
 	jal imprimirPos #imprimir posición 9
 	jal imprimirBarra
-	jal imprimirSaltoLinea	
+	jal imprimirSaltoLinea
+	jal imprimirBarrasHorizontales
+	jal imprimirSaltoLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -171,6 +182,12 @@ imprimirBarra:
 	
 imprimirSaltoLinea:
 	la $a0 saltoLinea # load address of msg8. into $a0
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	jr $ra #return
+	
+imprimirBarrasHorizontales:
+	la $a0 barrasHorizontales # load address of msg8. into $a0
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	jr $ra #return
