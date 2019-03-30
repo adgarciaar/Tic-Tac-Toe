@@ -1,8 +1,10 @@
+#  --- --- ---
 # | 1 | 2 | 3 |
 #  --- --- ---
 # | 4 | 5 | 6 |
 #  --- --- ---
 # | 7 | 8 | 9 |
+#  --- --- ---
 
 #1 en la casilla para X
 #-1 en la casilla para O
@@ -29,6 +31,10 @@
 	digiteNuevoJuego: .asciiz "\nDigite 1 para nuevo juego\n"
 	digiteSalir: .asciiz "Digite 2 para salir\n"
 	barrasHorizontales: .asciiz "-------------------"
+	referenciaLinea1: .asciiz "|  1  |  2  |  3  |"
+	referenciaLinea2: .asciiz "|  4  |  5  |  6  |"
+	referenciaLinea3: .asciiz "|  7  |  8  |  9  |"
+	espacio: .asciiz "            "
 
 .text #código de aquí en adelante
 
@@ -41,15 +47,15 @@ main:
 	beq $v0, 2, fin # si el valor digitado es 2 se termina la ejecución
 	
 imprimirMenuInicio:
-	la $a0 bienvenido # load address of msg8. into $a0
+	la $a0 bienvenido # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
-	la $a0 digiteNuevoJuego # load address of msg8. into $a0
+	la $a0 digiteNuevoJuego # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
-	la $a0 digiteSalir # load address of msg8. into $a0
+	la $a0 digiteSalir # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
@@ -82,7 +88,7 @@ lanzarTurnoJugador1:
 	#turno 1
 	
 	#imprimir turno jugador 1
-	la $a0 turnoJugador1 # load address of msg4. into $a0
+	la $a0 turnoJugador1 # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
@@ -92,7 +98,7 @@ lanzarTurnoJugador2:
 	#turno 2
 	
 	#imprimir turno jugador 1
-	la $a0 turnoJugador2 # load address of msg4. into $a0
+	la $a0 turnoJugador2 # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
@@ -106,7 +112,7 @@ loopTurnos:
     	#turno jugador 1
     	jal lanzarTurnoJugador1
     	jal imprimirTabla	
-	jal validarTresEnLinea
+	jal validarTresEnLinea #validar si alguno ganó
 	add $v1,$v1,1 #incrementar v1 en 1 (contador)
 	
 	bgt $v1,9,empateJugadores #cuando llega a 9 rompe el ciclo (hay empate)
@@ -114,7 +120,7 @@ loopTurnos:
 	#turno jugador 2
     	jal lanzarTurnoJugador2    	
 	jal imprimirTabla	
-	jal validarTresEnLinea	
+	jal validarTresEnLinea #validar si alguno ganó
 	add $v1,$v1,1 #incrementar v1 en 1 (contador)
 	
 	b loopTurnos #volver a ejecutar la función
@@ -125,8 +131,14 @@ imprimirTabla:
 	
 	jal imprimirSaltoLinea
 	jal imprimirBarrasHorizontales
+	
+	#imprimir guía de tabla a la derecha
+	jal imprimirEspacio
+	jal imprimirBarrasHorizontales
+	
 	jal imprimirSaltoLinea
 	jal imprimirBarra
+	
 	move $a1, $t1 #asignar a a1 el valor de casilla 1
 	jal imprimirPos #imprimir posición 1
 	jal imprimirBarra
@@ -136,8 +148,17 @@ imprimirTabla:
 	move $a1, $t3 #asignar a a1 el valor de casilla 3
 	jal imprimirPos #imprimir posición 3
 	jal imprimirBarra
+	
+	#imprimir guía de tabla a la derecha
+	jal imprimirEspacio
+	jal imprimirReferencia1	
 	jal imprimirSaltoLinea
 	jal imprimirBarrasHorizontales
+	
+	#imprimir guía de tabla a la derecha
+	jal imprimirEspacio
+	jal imprimirBarrasHorizontales
+	
 	jal imprimirSaltoLinea
 	jal imprimirBarra
 	move $a1, $t4 #asignar a a1 el valor de casilla 4
@@ -149,8 +170,16 @@ imprimirTabla:
 	move $a1, $t6 #asignar a a1 el valor de casilla 6
 	jal imprimirPos #imprimir posición 6
 	jal imprimirBarra
+	
+	#imprimir guía de tabla a la derecha
+	jal imprimirEspacio
+	jal imprimirReferencia2
 	jal imprimirSaltoLinea
 	jal imprimirBarrasHorizontales
+	
+	jal imprimirEspacio
+	jal imprimirBarrasHorizontales
+	
 	jal imprimirSaltoLinea
 	jal imprimirBarra
 	move $a1, $t7 #asignar a a1 el valor de casilla 7
@@ -162,50 +191,83 @@ imprimirTabla:
 	move $a1, $t9 #asignar a a1 el valor de casilla 9
 	jal imprimirPos #imprimir posición 9
 	jal imprimirBarra
+	
+	#imprimir guía de tabla a la derecha
+	jal imprimirEspacio
+	jal imprimirReferencia3	
 	jal imprimirSaltoLinea
 	jal imprimirBarrasHorizontales
+	
+	jal imprimirEspacio
+	jal imprimirBarrasHorizontales
+	
 	jal imprimirSaltoLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
-	jr $ra #return	
+	jr $ra #return
+		
 imprimirPos:	
 	beq $a1, 1, imprimirX
 	beq $a1, -1, imprimirO
 	beq $a1, 0, imprimirVacio
+	
+imprimirEspacio:
+	la $a0 espacio # load address of mensaje
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	jr $ra #return
+	
+imprimirReferencia1:
+	la $a0 referenciaLinea1 # load address of mensaje
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	jr $ra #return
+	
+imprimirReferencia2:
+	la $a0 referenciaLinea2 # load address of mensaje
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	jr $ra #return
+	
+imprimirReferencia3:
+	la $a0 referenciaLinea3 # load address of mensaje
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	jr $ra #return
 
 imprimirBarra:
-	la $a0 barra # load address of msg8. into $a0
+	la $a0 barra # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	jr $ra #return
 	
 imprimirSaltoLinea:
-	la $a0 saltoLinea # load address of msg8. into $a0
+	la $a0 saltoLinea # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	jr $ra #return
 	
 imprimirBarrasHorizontales:
-	la $a0 barrasHorizontales # load address of msg8. into $a0
+	la $a0 barrasHorizontales # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	jr $ra #return
 
 imprimirO:
-	la $a0 simboloO # load address of msg8. into $a0
+	la $a0 simboloO # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	jr $ra #return
 
 imprimirVacio:
-	la $a0 vacio # load address of msg8. into $a0
+	la $a0 vacio # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string	
 	jr $ra #return
 
 imprimirX:	
-	la $a0 simboloX # load address of msg8. into $a0
+	la $a0 simboloX # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	jr $ra #return
@@ -215,7 +277,7 @@ pedirPosicionJugador1:
 
 	#pedir posición jugada jugador 1
 	
-	la $a0 digitarPosicion # load address of msg4. into $a0
+	la $a0 digitarPosicion # load address of mensaje
 	li $v0 4 # system call code for print_str
 	#syscall # print the string
 
@@ -243,7 +305,7 @@ pedirPosicionJugador2:
 
 	#pedir posición jugada jugador 2
 
-	la $a0 digitarPosicion # load address of msg4. into $a0
+	la $a0 digitarPosicion # load address of mensaje
 	li $v0 4 # system call code for print_str
 	#syscall # print the string
 
@@ -411,26 +473,26 @@ validarTresEnLinea:
 	jr $ra #retornar a ciclo de turnos
 	
 ganaJugador1:
-	la $a0 ganaPartidaJugador1 # load address of msg8. into $a0
+	la $a0 ganaPartidaJugador1 # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	b main #retorna a main
 
 ganaJugador2:
-	la $a0 ganaPartidaJugador2 # load address of msg8. into $a0
+	la $a0 ganaPartidaJugador2 # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	b main #retorna a main
 	
 empateJugadores:
-	la $a0 empate # load address of msg8. into $a0
+	la $a0 empate # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	b main #retorna a main
 
 fin:
 	#imprimir adiós
-	la $a0 finalizacion # load address of msg8. into $a0
+	la $a0 finalizacion # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
