@@ -27,14 +27,17 @@
 	ganaPartidaJugador1: .asciiz "\nGana el jugador 1\n"
 	ganaPartidaJugador2: .asciiz "\nGana el jugador 2\n"
 	empate: .asciiz "\nEl juego ha terminado en empate\n"
-	bienvenido: .asciiz "\nBienvenido\n"
-	digiteNuevoJuego: .asciiz "\nDigite 1 para nuevo juego\n"
-	digiteSalir: .asciiz "Digite 2 para salir\n"
+	bienvenido: .asciiz "\nBienvenido\nDigite el número de una de las siguientes opciones:\n"
+	digiteNuevoJuegoJugadores: .asciiz "\n1. Nuevo juego para 2 jugadores\n"
+	digiteNuevoJuegoMaquina: .asciiz "2. Nuevo juego para 1 jugador vs máquina\n"
+	digiteSalir: .asciiz "3. Salir\n"
 	barrasHorizontales: .asciiz "-------------------"
 	referenciaLinea1: .asciiz "|  1  |  2  |  3  |"
 	referenciaLinea2: .asciiz "|  4  |  5  |  6  |"
 	referenciaLinea3: .asciiz "|  7  |  8  |  9  |"
 	espacio: .asciiz "            "
+	turnoMaquina: .asciiz "Juega la máquina\n"
+	ganaMaquina: .asciiz "Gana la máquina. ¿Será que algún día las máquinas gobernarán la Tierra?\n"
 
 .text #código de aquí en adelante
 
@@ -43,15 +46,20 @@ main:
 	
 	li $v0, 5 # system call code for Read Integer
 	syscall # reads the value into $v0
-	beq $v0, 1, nuevoJuego # si el valor digitado es 1 arranca nuevo juego
-	beq $v0, 2, fin # si el valor digitado es 2 se termina la ejecución
+	beq $v0, 1, nuevoJuegoJugadores # si el valor digitado es 1 arranca nuevo juego
+	beq $v0, 2, nuevoJuegoContraMaquina # si el valor digitado es 1 arranca nuevo juego
+	beq $v0, 3, fin # si el valor digitado es 2 se termina la ejecución
 	
 imprimirMenuInicio:
 	la $a0 bienvenido # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
-	la $a0 digiteNuevoJuego # load address of mensaje
+	la $a0 digiteNuevoJuegoJugadores # load address of mensaje
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	
+	la $a0 digiteNuevoJuegoMaquina # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
@@ -59,14 +67,506 @@ imprimirMenuInicio:
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	
-	jr $ra #return
+	jr $ra #return a main
 	
-nuevoJuego:
+nuevoJuegoJugadores:
+	li $s1, 1 # para saber si es entre humanos
 	jal inicializarTabla
 	jal imprimirTabla #imprimir tabla inicial
 	
 	li $v1,1 #asignar a v1 el valor de 1 para arrancar el ciclo siguiente
 	b loopTurnos #lanzar los 9 turnos
+	
+nuevoJuegoContraMaquina:
+	li $s1, 2 # para saber si es entre humano y máquina
+	jal inicializarTabla
+	jal imprimirTabla #imprimir tabla inicial
+	
+	li $v1,1 #asignar a v1 el valor de 1 para arrancar el ciclo siguiente
+	b loopTurnosContraMaquina #lanzar los 9 turnos
+	
+loopTurnosContraMaquina:    	
+    	
+    	#turno jugador 1
+    	jal lanzarTurnoJugador1
+    	jal imprimirTabla	
+	jal validarTresEnLinea #validar si alguno ganó
+	add $v1,$v1,1 #incrementar v1 en 1 (contador)
+	
+	bgt $v1,9,empateJugadores #cuando llega a 9 rompe el ciclo (hay empate)
+	
+	#turno máquina
+    	jal lanzarTurnoMaquina    	
+	jal imprimirTabla	
+	
+	jal validarTresEnLinea #validar si alguno ganó
+	add $v1,$v1,1 #incrementar v1 en 1 (contador)
+	
+	b loopTurnosContraMaquina #volver a ejecutar la función
+	
+lanzarTurnoMaquina:
+
+	#imprimir turno máquina
+	la $a0 turnoMaquina # load address of mensaje
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	
+	b pedirPosicionMaquina
+	
+pedirPosicionMaquina:
+
+	li $a2, 2 #asignar a a2 el valor de jugador 2
+	li $a3, -1 #asignar a a3 valor de -1 para adicionar un O en la casilla
+	
+	################################################
+	#jugadas de alta prioridad
+	
+	#primero ver si se puede ganar
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 1 | 2 | 3 |
+	add $t0,$t1,$t2 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, -2, hacerJugadaMaquinaFila1AltaPrioridad # puede ganar la máquina
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 4 | 5 | 6 |
+	add $t0,$t4,$t5 #sumar
+	add $t0,$t0,$t6 #sumar
+	beq $t0, -2, hacerJugadaMaquinaFila2AltaPrioridad # puede ganar la máquina
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 7 | 8 | 9 |
+	add $t0,$t7,$t8 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, -2, hacerJugadaMaquinaFila3AltaPrioridad # puede ganar la máquina
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 | 
+	# | 4 |
+	# | 7 | 
+	add $t0,$t1,$t4 #sumar
+	add $t0,$t0,$t7 #sumar
+	beq $t0, -2, hacerJugadaMaquinaColumna1AltaPrioridad # puede ganar la máquina
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	add $t0,$t2,$t5 #sumar
+	add $t0,$t0,$t8 #sumar
+	beq $t0, -2, hacerJugadaMaquinaColumna2AltaPrioridad # puede ganar la máquina
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	add $t0,$t3,$t6 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, -2, hacerJugadaMaquinaColumna3AltaPrioridad # puede ganar la máquina
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	add $t0,$t1,$t5 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, -2, hacerJugadaMaquinaTranversal1AltaPrioridad # puede ganar la máquina
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	add $t0,$t7,$t5 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, -2, hacerJugadaMaquinaTranversal2AltaPrioridad # puede ganar la máquina
+	
+	###################
+	#evitar que gane el humano
+
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 1 | 2 | 3 |
+	add $t0,$t1,$t2 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, 2, hacerJugadaMaquinaFila1AltaPrioridad # va a ganar el humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 4 | 5 | 6 |
+	add $t0,$t4,$t5 #sumar
+	add $t0,$t0,$t6 #sumar
+	beq $t0, 2, hacerJugadaMaquinaFila2AltaPrioridad # va a ganar el humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 7 | 8 | 9 |
+	add $t0,$t7,$t8 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 2, hacerJugadaMaquinaFila3AltaPrioridad # va a ganar el humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 | 
+	# | 4 |
+	# | 7 | 
+	add $t0,$t1,$t4 #sumar
+	add $t0,$t0,$t7 #sumar
+	beq $t0, 2, hacerJugadaMaquinaColumna1AltaPrioridad # va a ganar el humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	add $t0,$t2,$t5 #sumar
+	add $t0,$t0,$t8 #sumar
+	beq $t0, 2, hacerJugadaMaquinaColumna2AltaPrioridad # va a ganar el humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	add $t0,$t3,$t6 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 2, hacerJugadaMaquinaColumna3AltaPrioridad # va a ganar el humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	add $t0,$t1,$t5 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 2, hacerJugadaMaquinaTranversal1AltaPrioridad # va a ganar el humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	add $t0,$t7,$t5 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, 2, hacerJugadaMaquinaTranversal2AltaPrioridad # va a ganar el humano
+	
+	######################################################
+	#jugadas de media prioridad
+	#si se tiene una marca para alguna opción entonces marcar la segunda
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 1 | 2 | 3 |
+	add $t0,$t1,$t2 #sumar
+	add $t0,$t0,$t3 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaFila1MediaPrioridad 
+	beq $t0, -1, hacerJugadaMaquinaFila1MediaPrioridad #
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 4 | 5 | 6 |
+	add $t0,$t4,$t5 #sumar
+	add $t0,$t0,$t6 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaFila2MediaPrioridad 
+	beq $t0, -1, hacerJugadaMaquinaFila2MediaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 7 | 8 | 9 |
+	add $t0,$t7,$t8 #sumar
+	add $t0,$t0,$t9 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaFila3MediaPrioridad 
+	beq $t0, -1, hacerJugadaMaquinaFila3MediaPrioridad
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 | 
+	# | 4 |
+	# | 7 | 
+	add $t0,$t1,$t4 #sumar
+	add $t0,$t0,$t7 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaColumna1MediaPrioridad 
+	beq $t0, -1, hacerJugadaMaquinaColumna1MediaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	add $t0,$t2,$t5 #sumar
+	add $t0,$t0,$t8 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaColumna2MediaPrioridad 
+	beq $t0, -1, hacerJugadaMaquinaColumna2MediaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	add $t0,$t3,$t6 #sumar
+	add $t0,$t0,$t9 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaColumna3MediaPrioridad 
+	beq $t0, -1, hacerJugadaMaquinaColumna3MediaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	add $t0,$t1,$t5 #sumar
+	add $t0,$t0,$t9 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaTranversal1MediaPrioridad
+	beq $t0, -1, hacerJugadaMaquinaTranversal1MediaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	add $t0,$t7,$t5 #sumar
+	add $t0,$t0,$t3 #sumar
+	#beq $t0, 1, hacerJugadaMaquinaTranversal2MediaPrioridad 
+	beq $t0, -1, hacerJugadaMaquinaTranversal2MediaPrioridad
+	
+	#####################################################################
+	#jugada donde haya una marca del humano
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 1 | 2 | 3 |
+	add $t0,$t1,$t2 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, 1, hacerJugadaMaquinaFila1BajaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 4 | 5 | 6 |
+	add $t0,$t4,$t5 #sumar
+	add $t0,$t0,$t6 #sumar
+	beq $t0, 1, hacerJugadaMaquinaFila2BajaPrioridad
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	# validar | 7 | 8 | 9 |
+	add $t0,$t7,$t8 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 1, hacerJugadaMaquinaFila3BajaPrioridad
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 | 
+	# | 4 |
+	# | 7 | 
+	add $t0,$t1,$t4 #sumar
+	add $t0,$t0,$t7 #sumar
+	beq $t0, 1, hacerJugadaMaquinaColumna1BajaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	add $t0,$t2,$t5 #sumar
+	add $t0,$t0,$t8 #sumar
+	beq $t0, 1, hacerJugadaMaquinaColumna2BajaPrioridad
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	add $t0,$t3,$t6 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 1, hacerJugadaMaquinaColumna3BajaPrioridad 
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	add $t0,$t1,$t5 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 1, hacerJugadaMaquinaTranversal1BajaPrioridad
+	
+	li $t0, 0 # asignar valor de 0 a t1
+	#validar
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	add $t0,$t7,$t5 #sumar
+	add $t0,$t0,$t3 #sumar
+	beq $t0, 1, hacerJugadaMaquinaTranversal2BajaPrioridad
+	
+hacerJugadaMaquinaFila1AltaPrioridad:
+	# | 1 | 2 | 3 |
+	beq $t1, 0, verificarCasilla1
+	beq $t2, 0, verificarCasilla2
+	beq $t3, 0, verificarCasilla3
+
+hacerJugadaMaquinaFila2AltaPrioridad:
+	# | 4 | 5 | 6 |
+	beq $t4, 0, verificarCasilla4
+	beq $t5, 0, verificarCasilla5
+	beq $t6, 0, verificarCasilla6
+	
+hacerJugadaMaquinaFila3AltaPrioridad:
+	# | 7 | 8 | 9 |
+	beq $t7, 0, verificarCasilla7
+	beq $t8, 0, verificarCasilla8
+	beq $t9, 0, verificarCasilla9
+	
+hacerJugadaMaquinaColumna1AltaPrioridad:
+	# | 1 | 
+	# | 4 |
+	# | 7 | 
+	beq $t1, 0, verificarCasilla1
+	beq $t4, 0, verificarCasilla4
+	beq $t7, 0, verificarCasilla7
+
+hacerJugadaMaquinaColumna2AltaPrioridad:
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	beq $t2, 0, verificarCasilla2
+	beq $t5, 0, verificarCasilla5
+	beq $t8, 0, verificarCasilla8
+	
+hacerJugadaMaquinaColumna3AltaPrioridad:
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	beq $t3, 0, verificarCasilla3
+	beq $t6, 0, verificarCasilla6
+	beq $t9, 0, verificarCasilla9
+	
+hacerJugadaMaquinaTranversal1AltaPrioridad:
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	beq $t1, 0, verificarCasilla1
+	beq $t5, 0, verificarCasilla5
+	beq $t9, 0, verificarCasilla9
+	
+hacerJugadaMaquinaTranversal2AltaPrioridad:
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	beq $t3, 0, verificarCasilla3
+	beq $t5, 0, verificarCasilla5
+	beq $t7, 0, verificarCasilla7
+	
+hacerJugadaMaquinaFila1MediaPrioridad:
+	# | 1 | 2 | 3 |
+	beq $t1, -1, verificarCasilla2 #si la casilla 1 está ocupada entonces ir por la 2
+	beq $t2, -1, verificarCasilla1 #si la casilla 2 está ocupada entonces ir por la 1 o 3
+	beq $t3, -1, verificarCasilla2 #si la casilla 3 está ocupada entonces ir por la 2
+	
+hacerJugadaMaquinaFila2MediaPrioridad:
+	# | 4 | 5 | 6 |
+	beq $t4, -1, verificarCasilla5 #si la casilla 4 está ocupada entonces ir por la 5
+	beq $t5, -1, verificarCasilla4 #si la casilla 5 está ocupada entonces ir por la 4 o 5
+	beq $t6, -1, verificarCasilla5 #si la casilla 6 está ocupada entonces ir por la 5
+	
+hacerJugadaMaquinaFila3MediaPrioridad:
+	# | 7 | 8 | 9 |
+	beq $t7, -1, verificarCasilla8 #si la casilla 7 está ocupada entonces ir por la 8
+	beq $t8, -1, verificarCasilla7 #si la casilla 8 está ocupada entonces ir por la 7 o 9
+	beq $t9, -1, verificarCasilla8 #si la casilla 9 está ocupada entonces ir por la 8
+	
+hacerJugadaMaquinaColumna1MediaPrioridad:
+	# | 1 | 
+	# | 4 |
+	# | 7 |
+	beq $t1, -1, verificarCasilla4 #si la casilla 1 está ocupada entonces ir por la 4
+	beq $t4, -1, verificarCasilla7 #si la casilla 4 está ocupada entonces ir por la 1 o 7
+	beq $t7, -1, verificarCasilla4 #si la casilla 7 está ocupada entonces ir por la 4
+	
+hacerJugadaMaquinaColumna2MediaPrioridad:
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	beq $t2, -1, verificarCasilla5 #si la casilla 2 está ocupada entonces ir por la 5
+	beq $t5, -1, verificarCasilla2 #si la casilla 5 está ocupada entonces ir por la 2 o 8
+	beq $t8, -1, verificarCasilla5 #si la casilla 8 está ocupada entonces ir por la 5
+
+hacerJugadaMaquinaColumna3MediaPrioridad:
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	beq $t3, -1, verificarCasilla6 #si la casilla 3 está ocupada entonces ir por la 6
+	beq $t6, -1, verificarCasilla3 #si la casilla 6 está ocupada entonces ir por la 3 o 9
+	beq $t9, -1, verificarCasilla6 #si la casilla 9 está ocupada entonces ir por la 6
+	
+hacerJugadaMaquinaTranversal1MediaPrioridad:
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	beq $t1, -1, verificarCasilla5 #si la casilla 1 está ocupada entonces ir por la 5
+	beq $t5, -1, verificarCasilla1 #si la casilla 5 está ocupada entonces ir por la 1 o 9
+	beq $t9, -1, verificarCasilla5 #si la casilla 9 está ocupada entonces ir por la 5
+	
+hacerJugadaMaquinaTranversal2MediaPrioridad:
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	beq $t7, -1, verificarCasilla5 #si la casilla 7 está ocupada entonces ir por la 5
+	beq $t5, -1, verificarCasilla7 #si la casilla 6 está ocupada entonces ir por la 7 o 3
+	beq $t3, -1, verificarCasilla5 #si la casilla 3 está ocupada entonces ir por la 5
+	
+	
+hacerJugadaMaquinaFila1BajaPrioridad:
+	# | 1 | 2 | 3 |
+	beq $t1, 1, verificarCasilla2 #si la casilla 1 está ocupada entonces ir por la 2
+	beq $t2, 1, verificarCasilla1 #si la casilla 2 está ocupada entonces ir por la 1 o 3
+	beq $t3, 1, verificarCasilla2 #si la casilla 3 está ocupada entonces ir por la 2
+	
+hacerJugadaMaquinaFila2BajaPrioridad:
+	# | 4 | 5 | 6 |
+	beq $t4, 1, verificarCasilla5 #si la casilla 4 está ocupada entonces ir por la 5
+	beq $t5, 1, verificarCasilla4 #si la casilla 5 está ocupada entonces ir por la 4 o 5
+	beq $t6, 1, verificarCasilla5 #si la casilla 6 está ocupada entonces ir por la 5
+	
+hacerJugadaMaquinaFila3BajaPrioridad:
+	# | 7 | 8 | 9 |
+	beq $t7, 1, verificarCasilla8 #si la casilla 7 está ocupada entonces ir por la 8
+	beq $t8, 1, verificarCasilla7 #si la casilla 8 está ocupada entonces ir por la 7 o 9
+	beq $t9, 1, verificarCasilla8 #si la casilla 9 está ocupada entonces ir por la 8
+	
+hacerJugadaMaquinaColumna1BajaPrioridad:
+	# | 1 | 
+	# | 4 |
+	# | 7 |
+	beq $t1, 1, verificarCasilla4 #si la casilla 1 está ocupada entonces ir por la 4
+	beq $t4, 1, verificarCasilla7 #si la casilla 4 está ocupada entonces ir por la 1 o 7
+	beq $t7, 1, verificarCasilla4 #si la casilla 7 está ocupada entonces ir por la 4
+	
+hacerJugadaMaquinaColumna2BajaPrioridad:
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	beq $t2, 1, verificarCasilla5 #si la casilla 2 está ocupada entonces ir por la 5
+	beq $t5, 1, verificarCasilla2 #si la casilla 5 está ocupada entonces ir por la 2 o 8
+	beq $t8, 1, verificarCasilla5 #si la casilla 8 está ocupada entonces ir por la 5
+
+hacerJugadaMaquinaColumna3BajaPrioridad:
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	beq $t3, 1, verificarCasilla6 #si la casilla 3 está ocupada entonces ir por la 6
+	beq $t6, 1, verificarCasilla3 #si la casilla 6 está ocupada entonces ir por la 3 o 9
+	beq $t9, 1, verificarCasilla6 #si la casilla 9 está ocupada entonces ir por la 6
+	
+hacerJugadaMaquinaTranversal1BajaPrioridad:
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	beq $t1, 1, verificarCasilla5 #si la casilla 1 está ocupada entonces ir por la 5
+	beq $t5, 1, verificarCasilla1 #si la casilla 5 está ocupada entonces ir por la 1 o 9
+	beq $t9, 1, verificarCasilla5 #si la casilla 9 está ocupada entonces ir por la 5
+	
+hacerJugadaMaquinaTranversal2BajaPrioridad:
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   |
+	beq $t7, 1, verificarCasilla5 #si la casilla 7 está ocupada entonces ir por la 5
+	beq $t5, 1, verificarCasilla7 #si la casilla 6 está ocupada entonces ir por la 7 o 3
+	beq $t3, 1, verificarCasilla5 #si la casilla 3 está ocupada entonces ir por la 5
 	
 inicializarTabla:	
 	li $t1, 0 # asignar valor a casilla 1 (t1)
@@ -479,11 +979,18 @@ ganaJugador1:
 	b main #retorna a main
 
 ganaJugador2:
+	beq $s1, 2, ganaOrdenador
 	la $a0 ganaPartidaJugador2 # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	b main #retorna a main
-	
+
+ganaOrdenador:
+	la $a0 ganaMaquina # load address of mensaje
+	li $v0 4 # system call code for print_str
+	syscall # print the string
+	b main #retorna a main
+
 empateJugadores:
 	la $a0 empate # load address of mensaje
 	li $v0 4 # system call code for print_str
