@@ -118,6 +118,10 @@ pedirPosicionMaquina:
 	li $a2, 2 #asignar a a2 el valor de jugador 2
 	li $a3, -1 #asignar a a3 valor de -1 para adicionar un O en la casilla
 	
+	#####################################################################
+	
+	beq $v1,2, revisarJugadaCentro #si es la segunda jugada(primera de la máquina)
+	
 	################################################
 	#jugadas de alta prioridad
 	
@@ -254,319 +258,687 @@ pedirPosicionMaquina:
 	
 	######################################################
 	#jugadas de media prioridad
-	#si se tiene una marca para alguna opción entonces marcar la segunda
+	#si se tiene una marca en una posible línea para alguna opción entonces marcar la segunda
+	#sólo si la línea sirve para ganar, es decir, si no hay marca del humano en esa línea
+	
+	#revisar si la 1ra fila está ocupada
+	
+	# validar | 1 | 2 | 3 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	
+	jal validarPosicion1Ocupada
+	jal validarPosicion2Ocupada
+	jal validarPosicion3Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	li $t0, 0 # asignar valor de 0 a t1
-	# validar | 1 | 2 | 3 |
 	add $t0,$t1,$t2 #sumar
 	add $t0,$t0,$t3 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaFila1MediaPrioridad 
-	beq $t0, -1, hacerJugadaMaquinaFila1MediaPrioridad #
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	#si la línea sólo tiene 1 marca entonces s2=1
+	
+	beq $t0, 0, hacerJugadaMaquinaFila1MediaPrioridad
+	
+	# validar | 4 | 5 | 6 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion4Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion6Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	li $t0, 0 # asignar valor de 0 a t1
-	# validar | 4 | 5 | 6 |
 	add $t0,$t4,$t5 #sumar
 	add $t0,$t0,$t6 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaFila2MediaPrioridad 
-	beq $t0, -1, hacerJugadaMaquinaFila2MediaPrioridad 
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	
+	beq $t0, 0, hacerJugadaMaquinaFila2MediaPrioridad #si la línea sólo tiene 1 marca
+	
+	# validar | 7 | 8 | 9 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion7Ocupada
+	jal validarPosicion8Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	li $t0, 0 # asignar valor de 0 a t1
-	# validar | 7 | 8 | 9 |
 	add $t0,$t7,$t8 #sumar
 	add $t0,$t0,$t9 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaFila3MediaPrioridad 
-	beq $t0, -1, hacerJugadaMaquinaFila3MediaPrioridad
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	beq $t0, 0, hacerJugadaMaquinaFila3MediaPrioridad #si la línea sólo tiene 1 marca
+	
 	#validar
 	# | 1 | 
 	# | 4 |
-	# | 7 | 
-	add $t0,$t1,$t4 #sumar
-	add $t0,$t0,$t7 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaColumna1MediaPrioridad 
-	beq $t0, -1, hacerJugadaMaquinaColumna1MediaPrioridad 
+	# | 7 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion1Ocupada
+	jal validarPosicion4Ocupada
+	jal validarPosicion7Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	li $t0, 0 # asignar valor de 0 a t1
+	add $t0,$t1,$t4 #sumar
+	add $t0,$t0,$t7 #sumar
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	
+	beq $t0, 0, hacerJugadaMaquinaColumna1MediaPrioridad #si la línea sólo tiene 1 marca 
+	
 	#validar
 	# | 2 |
 	# | 5 |
 	# | 8 |
-	add $t0,$t2,$t5 #sumar
-	add $t0,$t0,$t8 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaColumna2MediaPrioridad 
-	beq $t0, -1, hacerJugadaMaquinaColumna2MediaPrioridad 
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion2Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion8Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	li $t0, 0 # asignar valor de 0 a t1
+	add $t0,$t2,$t5 #sumar
+	add $t0,$t0,$t8 #sumar
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	
+	beq $t0, 0, hacerJugadaMaquinaColumna2MediaPrioridad #si la línea sólo tiene 1 marca
+	
 	#validar
 	# | 3 |
 	# | 6 |
 	# | 9 |
-	add $t0,$t3,$t6 #sumar
-	add $t0,$t0,$t9 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaColumna3MediaPrioridad 
-	beq $t0, -1, hacerJugadaMaquinaColumna3MediaPrioridad 
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion3Ocupada
+	jal validarPosicion6Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	li $t0, 0 # asignar valor de 0 a t1
+	add $t0,$t3,$t6 #sumar
+	add $t0,$t0,$t9 #sumar
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	
+	beq $t0, 0, hacerJugadaMaquinaColumna3MediaPrioridad #si la línea sólo tiene 1 marca
+	
 	#validar
 	# | 1 |   |   |
 	# |   | 5 |   |
 	# |   |   | 9 |
-	add $t0,$t1,$t5 #sumar
-	add $t0,$t0,$t9 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaTranversal1MediaPrioridad
-	beq $t0, -1, hacerJugadaMaquinaTranversal1MediaPrioridad 
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion1Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	li $t0, 0 # asignar valor de 0 a t1
+	add $t0,$t1,$t5 #sumar
+	add $t0,$t0,$t9 #sumar
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	
+	beq $t0, 0, hacerJugadaMaquinaTranversal1MediaPrioridad #si la línea sólo tiene 1 marca
+	
 	#validar
 	# |   |   | 3 |
 	# |   | 5 |   |
-	# | 7 |   |   |
+	# | 7 |   |   | 
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion7Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion3Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	li $t0, 0 # asignar valor de 0 a t1
 	add $t0,$t7,$t5 #sumar
 	add $t0,$t0,$t3 #sumar
-	#beq $t0, 1, hacerJugadaMaquinaTranversal2MediaPrioridad 
-	beq $t0, -1, hacerJugadaMaquinaTranversal2MediaPrioridad
+	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	
+	beq $t0, 0, hacerJugadaMaquinaTranversal2MediaPrioridad #si la línea sólo tiene 1 marca
 	
 	#####################################################################
-	#jugada donde haya una marca del humano
+	#si alguna línea está en ceros entonces iniciarla
 	
-	li $t0, 0 # asignar valor de 0 a t1
 	# validar | 1 | 2 | 3 |
-	add $t0,$t1,$t2 #sumar
-	add $t0,$t0,$t3 #sumar
-	beq $t0, 1, hacerJugadaMaquinaFila1BajaPrioridad 
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion1Ocupada
+	jal validarPosicion2Ocupada
+	jal validarPosicion3Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla1 #no hay marcas en la línea
+	
 	# validar | 4 | 5 | 6 |
-	add $t0,$t4,$t5 #sumar
-	add $t0,$t0,$t6 #sumar
-	beq $t0, 1, hacerJugadaMaquinaFila2BajaPrioridad
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion4Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion6Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla4
+	
 	# validar | 7 | 8 | 9 |
-	add $t0,$t7,$t8 #sumar
-	add $t0,$t0,$t9 #sumar
-	beq $t0, 1, hacerJugadaMaquinaFila3BajaPrioridad
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion7Ocupada
+	jal validarPosicion8Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla7
+	
 	#validar
 	# | 1 | 
 	# | 4 |
 	# | 7 | 
-	add $t0,$t1,$t4 #sumar
-	add $t0,$t0,$t7 #sumar
-	beq $t0, 1, hacerJugadaMaquinaColumna1BajaPrioridad 
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion1Ocupada
+	jal validarPosicion4Ocupada
+	jal validarPosicion7Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla1
+	
 	#validar
 	# | 2 |
 	# | 5 |
 	# | 8 |
-	add $t0,$t2,$t5 #sumar
-	add $t0,$t0,$t8 #sumar
-	beq $t0, 1, hacerJugadaMaquinaColumna2BajaPrioridad
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion2Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion8Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla2
+	
 	#validar
 	# | 3 |
 	# | 6 |
 	# | 9 |
-	add $t0,$t3,$t6 #sumar
-	add $t0,$t0,$t9 #sumar
-	beq $t0, 1, hacerJugadaMaquinaColumna3BajaPrioridad 
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion3Ocupada
+	jal validarPosicion6Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla3
+
 	#validar
 	# | 1 |   |   |
 	# |   | 5 |   |
 	# |   |   | 9 |
-	add $t0,$t1,$t5 #sumar
-	add $t0,$t0,$t9 #sumar
-	beq $t0, 1, hacerJugadaMaquinaTranversal1BajaPrioridad
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion1Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla1
+	
 	#validar
 	# |   |   | 3 |
 	# |   | 5 |   |
 	# | 7 |   |   |
-	add $t0,$t7,$t5 #sumar
-	add $t0,$t0,$t3 #sumar
-	beq $t0, 1, hacerJugadaMaquinaTranversal2BajaPrioridad
 	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion7Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion3Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $s2, 0, verificarCasilla7
+	
+	#####################################################################
+	
+	#bge $v1,3, hacerUnaJugada #si # de jugada es >= 3
+	
+	b hacerUnaJugada
+	
+revisarJugadaCentro:
+	li $t0, 0 # asignar valor de 0 a t1
+	# sumar valor de las esquinas
+	add $t0,$t1,$t3 #sumar
+	add $t0,$t0,$t7 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 1, _adicionarSimbolo5 #si el humano marca en una esquina entonces marcar en centro
+	beq $t0, 0, hacerUnaJugada #sino
+	
+validarPosicion1Ocupada: 
+	bnez $t1, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion2Ocupada: 
+	bnez $t2, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion3Ocupada: 
+	bnez $t3, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion4Ocupada: 
+	bnez $t4, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion5Ocupada: 
+	bnez $t5, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion6Ocupada: 
+	bnez $t6, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion7Ocupada: 
+	bnez $t7, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion8Ocupada: 
+	bnez $t8, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion9Ocupada:
+	bnez $t9, _sumarOcupados #si es !=0 entonces sumar a ocupados	
+	jr $ra #regresar a pedirPosicionMaquina
+_sumarOcupados:
+	add $s2,$s2,1 #sumar uno
+	jr $ra #regresar a pedirPosicionMaquina			
+	
+hacerUnaJugada:
+
+	# validar | 1 | 2 | 3 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	
+	jal validarPosicion1Ocupada
+	jal validarPosicion2Ocupada
+	jal validarPosicion3Ocupada
+		
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	blt $s2, 3, hacerJugadaMaquinaFila1BajaPrioridad #si la línea sólo tiene 1 marca
+	
+	# validar | 4 | 5 | 6 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion4Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion6Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	blt $s2, 3, hacerJugadaMaquinaFila2BajaPrioridad #si la línea sólo tiene 1 marca
+	
+	# validar | 7 | 8 | 9 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2	
+	
+	jal validarPosicion7Ocupada	
+	jal validarPosicion8Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	blt $s2, 3, hacerJugadaMaquinaFila3BajaPrioridad #si la línea sólo tiene 1 marca
+	
+	#validar
+	# | 1 | 
+	# | 4 |
+	# | 7 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion1Ocupada
+	jal validarPosicion4Ocupada
+	jal validarPosicion7Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	blt $s2, 3, hacerJugadaMaquinaColumna1BajaPrioridad #si la línea sólo tiene 1 marca 
+	
+	#validar
+	# | 2 |
+	# | 5 |
+	# | 8 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion2Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion8Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+
+	blt $s2, 3, hacerJugadaMaquinaColumna2BajaPrioridad #si la línea sólo tiene 1 marca
+	
+	#validar
+	# | 3 |
+	# | 6 |
+	# | 9 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion3Ocupada
+	jal validarPosicion6Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	blt $s2, 3, hacerJugadaMaquinaColumna3BajaPrioridad #si la línea sólo tiene 1 marca
+	
+	#validar
+	# | 1 |   |   |
+	# |   | 5 |   |
+	# |   |   | 9 |
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion1Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion9Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	blt $s2, 3, hacerJugadaMaquinaTranversal1BajaPrioridad #si la línea sólo tiene 1 marca
+	
+	#validar
+	# |   |   | 3 |
+	# |   | 5 |   |
+	# | 7 |   |   | 
+	
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	li $s2, 0 # asignar valor de 0 a s2
+	jal validarPosicion7Ocupada
+	jal validarPosicion5Ocupada
+	jal validarPosicion3Ocupada
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	blt $s2, 3, hacerJugadaMaquinaTranversal2BajaPrioridad #si la línea sólo tiene 1 marca	
+
+
 hacerJugadaMaquinaFila1AltaPrioridad:
 	# | 1 | 2 | 3 |
-	beq $t1, 0, verificarCasilla1
-	beq $t2, 0, verificarCasilla2
-	beq $t3, 0, verificarCasilla3
+	beq $t1, 0, _adicionarSimbolo1
+	beq $t2, 0, _adicionarSimbolo2
+	beq $t3, 0, _adicionarSimbolo3
 
 hacerJugadaMaquinaFila2AltaPrioridad:
 	# | 4 | 5 | 6 |
-	beq $t4, 0, verificarCasilla4
-	beq $t5, 0, verificarCasilla5
-	beq $t6, 0, verificarCasilla6
+	beq $t4, 0, _adicionarSimbolo4
+	beq $t5, 0, _adicionarSimbolo5
+	beq $t6, 0, _adicionarSimbolo6
 	
 hacerJugadaMaquinaFila3AltaPrioridad:
 	# | 7 | 8 | 9 |
-	beq $t7, 0, verificarCasilla7
-	beq $t8, 0, verificarCasilla8
-	beq $t9, 0, verificarCasilla9
+	beq $t7, 0, _adicionarSimbolo7
+	beq $t8, 0, _adicionarSimbolo8
+	beq $t9, 0, _adicionarSimbolo9
 	
 hacerJugadaMaquinaColumna1AltaPrioridad:
 	# | 1 | 
 	# | 4 |
 	# | 7 | 
-	beq $t1, 0, verificarCasilla1
-	beq $t4, 0, verificarCasilla4
-	beq $t7, 0, verificarCasilla7
+	beq $t1, 0, _adicionarSimbolo1
+	beq $t4, 0, _adicionarSimbolo4
+	beq $t7, 0, _adicionarSimbolo7
 
 hacerJugadaMaquinaColumna2AltaPrioridad:
 	# | 2 |
 	# | 5 |
 	# | 8 |
-	beq $t2, 0, verificarCasilla2
-	beq $t5, 0, verificarCasilla5
-	beq $t8, 0, verificarCasilla8
+	beq $t2, 0, _adicionarSimbolo2
+	beq $t5, 0, _adicionarSimbolo5
+	beq $t8, 0, _adicionarSimbolo8
 	
 hacerJugadaMaquinaColumna3AltaPrioridad:
 	# | 3 |
 	# | 6 |
 	# | 9 |
-	beq $t3, 0, verificarCasilla3
-	beq $t6, 0, verificarCasilla6
-	beq $t9, 0, verificarCasilla9
+	beq $t3, 0, _adicionarSimbolo3
+	beq $t6, 0, _adicionarSimbolo6
+	beq $t9, 0, _adicionarSimbolo9
 	
 hacerJugadaMaquinaTranversal1AltaPrioridad:
 	# | 1 |   |   |
 	# |   | 5 |   |
 	# |   |   | 9 |
-	beq $t1, 0, verificarCasilla1
-	beq $t5, 0, verificarCasilla5
-	beq $t9, 0, verificarCasilla9
+	beq $t1, 0, _adicionarSimbolo1
+	beq $t5, 0, _adicionarSimbolo5
+	beq $t9, 0, _adicionarSimbolo9
 	
 hacerJugadaMaquinaTranversal2AltaPrioridad:
 	# |   |   | 3 |
 	# |   | 5 |   |
 	# | 7 |   |   |
-	beq $t3, 0, verificarCasilla3
-	beq $t5, 0, verificarCasilla5
-	beq $t7, 0, verificarCasilla7
+	beq $t3, 0, _adicionarSimbolo3
+	beq $t5, 0, _adicionarSimbolo5
+	beq $t7, 0, _adicionarSimbolo7
+	
 	
 hacerJugadaMaquinaFila1MediaPrioridad:
-	# | 1 | 2 | 3 |
-	beq $t1, -1, verificarCasilla2 #si la casilla 1 está ocupada entonces ir por la 2
-	beq $t2, -1, verificarCasilla1 #si la casilla 2 está ocupada entonces ir por la 1 o 3
-	beq $t3, -1, verificarCasilla2 #si la casilla 3 está ocupada entonces ir por la 2
-	
+	# | 1 | 2 | 3 |	
+	beq $t1, -1, _adicionarSimbolo2 #si la casilla 1 está ocupada entonces ir por la 2
+	beq $t2, -1, _adicionarSimbolo1 #si la casilla 2 está ocupada entonces ir por la 1 o 3
+	beq $t3, -1, _adicionarSimbolo2 #si la casilla 3 está ocupada entonces ir por la 2
+
 hacerJugadaMaquinaFila2MediaPrioridad:
 	# | 4 | 5 | 6 |
-	beq $t4, -1, verificarCasilla5 #si la casilla 4 está ocupada entonces ir por la 5
-	beq $t5, -1, verificarCasilla4 #si la casilla 5 está ocupada entonces ir por la 4 o 5
-	beq $t6, -1, verificarCasilla5 #si la casilla 6 está ocupada entonces ir por la 5
+	beq $t4, -1, _adicionarSimbolo5 #si la casilla 4 está ocupada entonces ir por la 5
+	beq $t5, -1, _adicionarSimbolo4 #si la casilla 5 está ocupada entonces ir por la 4 o 6
+	beq $t6, -1, _adicionarSimbolo5 #si la casilla 6 está ocupada entonces ir por la 5
 	
 hacerJugadaMaquinaFila3MediaPrioridad:
 	# | 7 | 8 | 9 |
-	beq $t7, -1, verificarCasilla8 #si la casilla 7 está ocupada entonces ir por la 8
-	beq $t8, -1, verificarCasilla7 #si la casilla 8 está ocupada entonces ir por la 7 o 9
-	beq $t9, -1, verificarCasilla8 #si la casilla 9 está ocupada entonces ir por la 8
+	beq $t7, -1, _adicionarSimbolo8 #si la casilla 7 está ocupada entonces ir por la 8
+	beq $t8, -1, _adicionarSimbolo7 #si la casilla 8 está ocupada entonces ir por la 7 o 9
+	beq $t9, -1, _adicionarSimbolo8 #si la casilla 9 está ocupada entonces ir por la 8
 	
 hacerJugadaMaquinaColumna1MediaPrioridad:
 	# | 1 | 
 	# | 4 |
 	# | 7 |
-	beq $t1, -1, verificarCasilla4 #si la casilla 1 está ocupada entonces ir por la 4
-	beq $t4, -1, verificarCasilla7 #si la casilla 4 está ocupada entonces ir por la 1 o 7
-	beq $t7, -1, verificarCasilla4 #si la casilla 7 está ocupada entonces ir por la 4
+	beq $t1, -1, _adicionarSimbolo4 #si la casilla 1 está ocupada entonces ir por la 4
+	beq $t4, -1, _adicionarSimbolo7 #si la casilla 4 está ocupada entonces ir por la 1 o 7
+	beq $t7, -1, _adicionarSimbolo4 #si la casilla 7 está ocupada entonces ir por la 4
 	
 hacerJugadaMaquinaColumna2MediaPrioridad:
 	# | 2 |
 	# | 5 |
 	# | 8 |
-	beq $t2, -1, verificarCasilla5 #si la casilla 2 está ocupada entonces ir por la 5
-	beq $t5, -1, verificarCasilla2 #si la casilla 5 está ocupada entonces ir por la 2 o 8
-	beq $t8, -1, verificarCasilla5 #si la casilla 8 está ocupada entonces ir por la 5
+	beq $t2, -1, _adicionarSimbolo5 #si la casilla 2 está ocupada entonces ir por la 5
+	beq $t5, -1, _adicionarSimbolo2 #si la casilla 5 está ocupada entonces ir por la 2 o 8
+	beq $t8, -1, _adicionarSimbolo5 #si la casilla 8 está ocupada entonces ir por la 5
 
 hacerJugadaMaquinaColumna3MediaPrioridad:
 	# | 3 |
 	# | 6 |
 	# | 9 |
-	beq $t3, -1, verificarCasilla6 #si la casilla 3 está ocupada entonces ir por la 6
-	beq $t6, -1, verificarCasilla3 #si la casilla 6 está ocupada entonces ir por la 3 o 9
-	beq $t9, -1, verificarCasilla6 #si la casilla 9 está ocupada entonces ir por la 6
+	beq $t3, -1, _adicionarSimbolo6 #si la casilla 3 está ocupada entonces ir por la 6
+	beq $t6, -1, _adicionarSimbolo3 #si la casilla 6 está ocupada entonces ir por la 3 o 9
+	beq $t9, -1, _adicionarSimbolo6 #si la casilla 9 está ocupada entonces ir por la 6
 	
 hacerJugadaMaquinaTranversal1MediaPrioridad:
 	# | 1 |   |   |
 	# |   | 5 |   |
 	# |   |   | 9 |
-	beq $t1, -1, verificarCasilla5 #si la casilla 1 está ocupada entonces ir por la 5
-	beq $t5, -1, verificarCasilla1 #si la casilla 5 está ocupada entonces ir por la 1 o 9
-	beq $t9, -1, verificarCasilla5 #si la casilla 9 está ocupada entonces ir por la 5
+	beq $t1, -1, _adicionarSimbolo5 #si la casilla 1 está ocupada entonces ir por la 5
+	beq $t5, -1, _adicionarSimbolo1 #si la casilla 5 está ocupada entonces ir por la 1 o 9
+	beq $t9, -1, _adicionarSimbolo5 #si la casilla 9 está ocupada entonces ir por la 5
 	
 hacerJugadaMaquinaTranversal2MediaPrioridad:
 	# |   |   | 3 |
 	# |   | 5 |   |
 	# | 7 |   |   |
-	beq $t7, -1, verificarCasilla5 #si la casilla 7 está ocupada entonces ir por la 5
-	beq $t5, -1, verificarCasilla7 #si la casilla 6 está ocupada entonces ir por la 7 o 3
-	beq $t3, -1, verificarCasilla5 #si la casilla 3 está ocupada entonces ir por la 5
+	beq $t7, -1, _adicionarSimbolo5 #si la casilla 7 está ocupada entonces ir por la 5
+	beq $t5, -1, _adicionarSimbolo7 #si la casilla 6 está ocupada entonces ir por la 7 o 3
+	beq $t3, -1, _adicionarSimbolo5 #si la casilla 3 está ocupada entonces ir por la 5
 	
 	
 hacerJugadaMaquinaFila1BajaPrioridad:
 	# | 1 | 2 | 3 |
-	beq $t1, 1, verificarCasilla2 #si la casilla 1 está ocupada entonces ir por la 2
-	beq $t2, 1, verificarCasilla1 #si la casilla 2 está ocupada entonces ir por la 1 o 3
-	beq $t3, 1, verificarCasilla2 #si la casilla 3 está ocupada entonces ir por la 2
+	beq $t1, 0, _adicionarSimbolo1 #ir por la que esté desocupada
+	beq $t2, 0, _adicionarSimbolo2 
+	beq $t3, 0, _adicionarSimbolo3
 	
 hacerJugadaMaquinaFila2BajaPrioridad:
 	# | 4 | 5 | 6 |
-	beq $t4, 1, verificarCasilla5 #si la casilla 4 está ocupada entonces ir por la 5
-	beq $t5, 1, verificarCasilla4 #si la casilla 5 está ocupada entonces ir por la 4 o 5
-	beq $t6, 1, verificarCasilla5 #si la casilla 6 está ocupada entonces ir por la 5
+	beq $t4, 0, _adicionarSimbolo4
+	beq $t5, 0, _adicionarSimbolo5 
+	beq $t6, 0, _adicionarSimbolo6
 	
 hacerJugadaMaquinaFila3BajaPrioridad:
 	# | 7 | 8 | 9 |
-	beq $t7, 1, verificarCasilla8 #si la casilla 7 está ocupada entonces ir por la 8
-	beq $t8, 1, verificarCasilla7 #si la casilla 8 está ocupada entonces ir por la 7 o 9
-	beq $t9, 1, verificarCasilla8 #si la casilla 9 está ocupada entonces ir por la 8
+	beq $t7, 0, _adicionarSimbolo7
+	beq $t8, 0, _adicionarSimbolo8 
+	beq $t9, 0, _adicionarSimbolo9
 	
 hacerJugadaMaquinaColumna1BajaPrioridad:
 	# | 1 | 
 	# | 4 |
 	# | 7 |
-	beq $t1, 1, verificarCasilla4 #si la casilla 1 está ocupada entonces ir por la 4
-	beq $t4, 1, verificarCasilla7 #si la casilla 4 está ocupada entonces ir por la 1 o 7
-	beq $t7, 1, verificarCasilla4 #si la casilla 7 está ocupada entonces ir por la 4
+	beq $t1, 0, _adicionarSimbolo1
+	beq $t4, 0, _adicionarSimbolo4
+	beq $t7, 0, _adicionarSimbolo7
 	
 hacerJugadaMaquinaColumna2BajaPrioridad:
 	# | 2 |
 	# | 5 |
 	# | 8 |
-	beq $t2, 1, verificarCasilla5 #si la casilla 2 está ocupada entonces ir por la 5
-	beq $t5, 1, verificarCasilla2 #si la casilla 5 está ocupada entonces ir por la 2 o 8
-	beq $t8, 1, verificarCasilla5 #si la casilla 8 está ocupada entonces ir por la 5
+	beq $t2, 0, _adicionarSimbolo2
+	beq $t5, 0, _adicionarSimbolo5
+	beq $t8, 0, _adicionarSimbolo8
 
 hacerJugadaMaquinaColumna3BajaPrioridad:
 	# | 3 |
 	# | 6 |
 	# | 9 |
-	beq $t3, 1, verificarCasilla6 #si la casilla 3 está ocupada entonces ir por la 6
-	beq $t6, 1, verificarCasilla3 #si la casilla 6 está ocupada entonces ir por la 3 o 9
-	beq $t9, 1, verificarCasilla6 #si la casilla 9 está ocupada entonces ir por la 6
+	beq $t3, 0, _adicionarSimbolo3 
+	beq $t6, 0, _adicionarSimbolo6
+	beq $t9, 0, _adicionarSimbolo9
 	
 hacerJugadaMaquinaTranversal1BajaPrioridad:
 	# | 1 |   |   |
 	# |   | 5 |   |
 	# |   |   | 9 |
-	beq $t1, 1, verificarCasilla5 #si la casilla 1 está ocupada entonces ir por la 5
-	beq $t5, 1, verificarCasilla1 #si la casilla 5 está ocupada entonces ir por la 1 o 9
-	beq $t9, 1, verificarCasilla5 #si la casilla 9 está ocupada entonces ir por la 5
+	beq $t1, 0, _adicionarSimbolo1
+	beq $t5, 0, _adicionarSimbolo5
+	beq $t9, 0, _adicionarSimbolo9
 	
 hacerJugadaMaquinaTranversal2BajaPrioridad:
 	# |   |   | 3 |
 	# |   | 5 |   |
 	# | 7 |   |   |
-	beq $t7, 1, verificarCasilla5 #si la casilla 7 está ocupada entonces ir por la 5
-	beq $t5, 1, verificarCasilla7 #si la casilla 6 está ocupada entonces ir por la 7 o 3
-	beq $t3, 1, verificarCasilla5 #si la casilla 3 está ocupada entonces ir por la 5
+	beq $t7, 0, _adicionarSimbolo7
+	beq $t5, 0, _adicionarSimbolo5
+	beq $t3, 0, _adicionarSimbolo3
 	
 inicializarTabla:	
 	li $t1, 0 # asignar valor a casilla 1 (t1)
@@ -577,11 +949,7 @@ inicializarTabla:
 	li $t6, 0 # asignar valor a casilla 6 (t6)
 	li $t7, 0 # asignar valor a casilla 7 (t7)
 	li $t8, 0 # asignar valor a casilla 8 (t8)
-	li $t9, 0 # asignar valor a casilla 9 (t9)
-	#comprobar que se inicializaron las casillas
-	#li $v0, 1 # Code to print an integer is 1
-	#move $a0, $t8 # Pass argument to system in $a0
-	#syscall # print the string	
+	li $t9, 0 # asignar valor a casilla 9 (t9)	
 	jr $ra #return
 	
 lanzarTurnoJugador1:
@@ -604,11 +972,7 @@ lanzarTurnoJugador2:
 	
 	b pedirPosicionJugador2
 	
-loopTurnos:    	
-    	#li $v0, 1 # Code to print an integer is 1
-	#move $a0, $v1 # Pass argument to system in $a0
-	#syscall # print the string
-    	
+loopTurnos:    	    	
     	#turno jugador 1
     	jal lanzarTurnoJugador1
     	jal imprimirTabla	
@@ -856,7 +1220,7 @@ _adicionarSimbolo4:
 	move $t4, $a3 #asignar a la casilla 1 el valor de jugador (1 o 2)
 	jr $ra #retornar a ciclo de turnos
 	
-verificarCasilla5:
+verificarCasilla5:	
 	beq $t5, 0, _adicionarSimbolo5 # si la casilla está en 0 (se puede adicionar)
 	b rectificarPosicion
 _adicionarSimbolo5:
