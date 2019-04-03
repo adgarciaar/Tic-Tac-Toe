@@ -122,6 +122,13 @@ pedirPosicionMaquina:
 	
 	beq $v1,2, revisarJugadaCentro #si es la segunda jugada(primera de la máquina)
 	
+	#####################################################################
+	
+	beq $v1,4, revisarJugadaCentroYEsquina #si es la segunda jugada de la máquina (4ta en total)
+	
+	b jugadasAltaPrioridad
+
+jugadasAltaPrioridad:
 	################################################
 	#jugadas de alta prioridad
 	
@@ -256,6 +263,9 @@ pedirPosicionMaquina:
 	add $t0,$t0,$t3 #sumar
 	beq $t0, 2, hacerJugadaMaquinaTranversal2AltaPrioridad # va a ganar el humano
 	
+	b jugadasMediaPrioridad
+	
+jugadasMediaPrioridad:	
 	######################################################
 	#jugadas de media prioridad
 	#si se tiene una marca en una posible línea para alguna opción entonces marcar la segunda
@@ -440,6 +450,9 @@ pedirPosicionMaquina:
 	
 	beq $t0, 0, hacerJugadaMaquinaTranversal2MediaPrioridad #si la línea sólo tiene 1 marca
 	
+	b irPorLineaEnCeros
+
+irPorLineaEnCeros:
 	#####################################################################
 	#si alguna línea está en ceros entonces iniciarla
 	
@@ -582,50 +595,9 @@ pedirPosicionMaquina:
 	
 	#bge $v1,3, hacerUnaJugada #si # de jugada es >= 3
 	
-	b hacerUnaJugada
+	b jugadasBajaPrioridad
 	
-revisarJugadaCentro:
-	li $t0, 0 # asignar valor de 0 a t1
-	# sumar valor de las esquinas
-	add $t0,$t1,$t3 #sumar
-	add $t0,$t0,$t7 #sumar
-	add $t0,$t0,$t9 #sumar
-	beq $t0, 1, _adicionarSimbolo5 #si el humano marca en una esquina entonces marcar en centro
-	beq $t0, 0, hacerUnaJugada #sino
-	
-validarPosicion1Ocupada: 
-	bnez $t1, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion2Ocupada: 
-	bnez $t2, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion3Ocupada: 
-	bnez $t3, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion4Ocupada: 
-	bnez $t4, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion5Ocupada: 
-	bnez $t5, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion6Ocupada: 
-	bnez $t6, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion7Ocupada: 
-	bnez $t7, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion8Ocupada: 
-	bnez $t8, _sumarOcupados #si es !=0 entonces sumar a ocupados
-	jr $ra #regresar a pedirPosicionMaquina	
-validarPosicion9Ocupada:
-	bnez $t9, _sumarOcupados #si es !=0 entonces sumar a ocupados	
-	jr $ra #regresar a pedirPosicionMaquina
-_sumarOcupados:
-	add $s2,$s2,1 #sumar uno
-	jr $ra #regresar a pedirPosicionMaquina			
-	
-hacerUnaJugada:
-
+jugadasBajaPrioridad:
 	# validar | 1 | 2 | 3 |
 	
 	addi $sp, $sp, -4 #pedir espacio en pila
@@ -762,8 +734,54 @@ hacerUnaJugada:
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
 	blt $s2, 3, hacerJugadaMaquinaTranversal2BajaPrioridad #si la línea sólo tiene 1 marca	
-
-
+	
+revisarJugadaCentro:
+	li $t0, 0 # asignar valor de 0 a t1
+	# sumar valor de las esquinas
+	add $t0,$t1,$t3 #sumar
+	add $t0,$t0,$t7 #sumar
+	add $t0,$t0,$t9 #sumar
+	beq $t0, 1, _adicionarSimbolo5 #si el humano marca en una esquina entonces marcar en centro
+	beq $t0, 0, jugadasBajaPrioridad #sino
+	
+revisarJugadaCentroYEsquina:
+	li $t0, 0 # asignar valor de 0 a t1
+	# sumar valor de las esquinas
+	add $t0,$t5,$t9 #sumar
+	beq $t0, 2, _adicionarSimbolo3
+	b jugadasAltaPrioridad
+	
+validarPosicion1Ocupada: 
+	bnez $t1, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion2Ocupada: 
+	bnez $t2, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion3Ocupada: 
+	bnez $t3, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion4Ocupada: 
+	bnez $t4, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion5Ocupada: 
+	bnez $t5, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion6Ocupada: 
+	bnez $t6, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion7Ocupada: 
+	bnez $t7, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion8Ocupada: 
+	bnez $t8, _sumarOcupados #si es !=0 entonces sumar a ocupados
+	jr $ra #regresar a pedirPosicionMaquina	
+validarPosicion9Ocupada:
+	bnez $t9, _sumarOcupados #si es !=0 entonces sumar a ocupados	
+	jr $ra #regresar a pedirPosicionMaquina
+_sumarOcupados:
+	add $s2,$s2,1 #sumar uno
+	jr $ra #regresar a pedirPosicionMaquina
+	
 hacerJugadaMaquinaFila1AltaPrioridad:
 	# | 1 | 2 | 3 |
 	beq $t1, 0, _adicionarSimbolo1
