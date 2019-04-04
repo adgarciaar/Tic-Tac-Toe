@@ -608,6 +608,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion1Ocupada
 	jal validarPosicion2Ocupada
 	jal validarPosicion3Ocupada
+	jal generarAleatorioLinea
 		
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -623,6 +624,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion4Ocupada
 	jal validarPosicion5Ocupada
 	jal validarPosicion6Ocupada
+	jal generarAleatorioLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -639,6 +641,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion7Ocupada	
 	jal validarPosicion8Ocupada
 	jal validarPosicion9Ocupada
+	jal generarAleatorioLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -657,6 +660,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion1Ocupada
 	jal validarPosicion4Ocupada
 	jal validarPosicion7Ocupada
+	jal generarAleatorioLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -675,6 +679,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion2Ocupada
 	jal validarPosicion5Ocupada
 	jal validarPosicion8Ocupada
+	jal generarAleatorioLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -693,6 +698,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion3Ocupada
 	jal validarPosicion6Ocupada
 	jal validarPosicion9Ocupada
+	jal generarAleatorioLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -711,6 +717,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion1Ocupada
 	jal validarPosicion5Ocupada
 	jal validarPosicion9Ocupada
+	jal generarAleatorioLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -729,6 +736,7 @@ jugadasBajaPrioridad:
 	jal validarPosicion7Ocupada
 	jal validarPosicion5Ocupada
 	jal validarPosicion3Ocupada
+	jal generarAleatorioLinea
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -742,7 +750,37 @@ revisarJugadaCentro:
 	add $t0,$t0,$t7 #sumar
 	add $t0,$t0,$t9 #sumar
 	beq $t0, 1, _adicionarSimbolo5 #si el humano marca en una esquina entonces marcar en centro
+	
+	beq $t5, 1, generarAleatorioTodos
+	
 	beq $t0, 0, jugadasBajaPrioridad #sino
+	
+generarAleatorioLinea:
+	li $v0, 42  # 42 is system call code to generate random int
+	li $a1, 2 # $a1 is where you set the upper bound
+	syscall     # your generated number will be at $a0
+	#beq $a0, 0, generarAleatorioLinea
+	jr $ra
+	
+generarAleatorioTodos:
+	li $v0, 42  # 42 is system call code to generate random int
+	li $a1, 9 # $a1 is where you set the upper bound
+	syscall     # your generated number will be at $a0
+	beq $a0, 0, generarAleatorioTodos
+	lanzarAleatorioTodos
+	
+lanzarAleatorioTodos:
+	beq $a0, 1, _adicionarSimbolo1
+	beq $a0, 2, _adicionarSimbolo2
+	beq $a0, 3, _adicionarSimbolo3
+	beq $a0, 4, _adicionarSimbolo4
+	beq $a0, 5, _adicionarSimbolo5
+	beq $a0, 6, _adicionarSimbolo6
+	beq $a0, 7, _adicionarSimbolo7
+	beq $a0, 8, _adicionarSimbolo8
+	beq $a0, 9, _adicionarSimbolo9	
+	#li $v0, 1   # 1 is the system call code to show an int number
+	#syscall     # as I said your generated number is at $a0, so it will be printed
 	
 revisarJugadaCentroYEsquina:
 	#si humano jugó en 5 y 6
@@ -954,61 +992,61 @@ hacerJugadaMaquinaTranversal2MediaPrioridad:
 	
 hacerJugadaMaquinaFila1BajaPrioridad:
 	# | 1 | 2 | 3 |
-	beq $t1, 0, _adicionarSimbolo1 #ir por la que esté desocupada
-	beq $t2, 0, _adicionarSimbolo2 
-	beq $t3, 0, _adicionarSimbolo3
+	beq $a0, 0, _adicionarSimbolo1 #ir por la que esté desocupada
+	beq $a0, 1, _adicionarSimbolo2 
+	beq $a0, 2, _adicionarSimbolo3
 	
 hacerJugadaMaquinaFila2BajaPrioridad:
 	# | 4 | 5 | 6 |
-	beq $t4, 0, _adicionarSimbolo4
-	beq $t5, 0, _adicionarSimbolo5 
-	beq $t6, 0, _adicionarSimbolo6
+	beq $a0, 0, _adicionarSimbolo4
+	beq $a0, 1, _adicionarSimbolo5 
+	beq $a0, 2, _adicionarSimbolo6
 	
 hacerJugadaMaquinaFila3BajaPrioridad:
 	# | 7 | 8 | 9 |
-	beq $t7, 0, _adicionarSimbolo7
-	beq $t8, 0, _adicionarSimbolo8 
-	beq $t9, 0, _adicionarSimbolo9
+	beq $a0, 0, _adicionarSimbolo7
+	beq $a0, 1, _adicionarSimbolo8 
+	beq $t9, 2, _adicionarSimbolo9
 	
 hacerJugadaMaquinaColumna1BajaPrioridad:
 	# | 1 | 
 	# | 4 |
 	# | 7 |
-	beq $t1, 0, _adicionarSimbolo1
-	beq $t4, 0, _adicionarSimbolo4
-	beq $t7, 0, _adicionarSimbolo7
+	beq $a0, 0, _adicionarSimbolo1
+	beq $a0, 1, _adicionarSimbolo4
+	beq $a0, 2, _adicionarSimbolo7
 	
 hacerJugadaMaquinaColumna2BajaPrioridad:
 	# | 2 |
 	# | 5 |
 	# | 8 |
-	beq $t2, 0, _adicionarSimbolo2
-	beq $t5, 0, _adicionarSimbolo5
-	beq $t8, 0, _adicionarSimbolo8
+	beq $a0, 0, _adicionarSimbolo2
+	beq $a0, 1, _adicionarSimbolo5
+	beq $a0, 2, _adicionarSimbolo8
 
 hacerJugadaMaquinaColumna3BajaPrioridad:
 	# | 3 |
 	# | 6 |
 	# | 9 |
-	beq $t3, 0, _adicionarSimbolo3 
-	beq $t6, 0, _adicionarSimbolo6
-	beq $t9, 0, _adicionarSimbolo9
+	beq $a0, 0, _adicionarSimbolo3 
+	beq $a0, 1, _adicionarSimbolo6
+	beq $a0, 2, _adicionarSimbolo9
 	
 hacerJugadaMaquinaTranversal1BajaPrioridad:
 	# | 1 |   |   |
 	# |   | 5 |   |
 	# |   |   | 9 |
-	beq $t1, 0, _adicionarSimbolo1
-	beq $t5, 0, _adicionarSimbolo5
-	beq $t9, 0, _adicionarSimbolo9
+	beq $a0, 0, _adicionarSimbolo1
+	beq $a0, 1, _adicionarSimbolo5
+	beq $a0, 2, _adicionarSimbolo9
 	
 hacerJugadaMaquinaTranversal2BajaPrioridad:
 	# |   |   | 3 |
 	# |   | 5 |   |
 	# | 7 |   |   |
-	beq $t7, 0, _adicionarSimbolo7
-	beq $t5, 0, _adicionarSimbolo5
-	beq $t3, 0, _adicionarSimbolo3
+	beq $a0, 0, _adicionarSimbolo7
+	beq $a0, 1, _adicionarSimbolo5
+	beq $a0, 2, _adicionarSimbolo3
 	
 inicializarTabla:	
 	li $t1, 0 # asignar valor a casilla 1 (t1)
