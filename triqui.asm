@@ -767,7 +767,7 @@ generarAleatorioEsquinas:
 	li $a1, 3 # $a1 is where you set the upper bound
 	syscall     # your generated number will be at $a0
 	beq $a0, 0, generarAleatorioEsquinas
-	lanzarAleatorioEsquinas
+	b lanzarAleatorioEsquinas
 	
 lanzarAleatorioEsquinas:
 	beq $a0, 0, _adicionarSimbolo1
