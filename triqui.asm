@@ -751,7 +751,7 @@ revisarJugadaCentro:
 	add $t0,$t0,$t9 #sumar
 	beq $t0, 1, _adicionarSimbolo5 #si el humano marca en una esquina entonces marcar en centro
 	
-	beq $t5, 1, generarAleatorioTodos
+	beq $t5, 1, generarAleatorioEsquinas
 	
 	beq $t0, 0, jugadasBajaPrioridad #sino
 	
@@ -762,23 +762,18 @@ generarAleatorioLinea:
 	#beq $a0, 0, generarAleatorioLinea
 	jr $ra
 	
-generarAleatorioTodos:
+generarAleatorioEsquinas:
 	li $v0, 42  # 42 is system call code to generate random int
-	li $a1, 9 # $a1 is where you set the upper bound
+	li $a1, 3 # $a1 is where you set the upper bound
 	syscall     # your generated number will be at $a0
-	beq $a0, 0, generarAleatorioTodos
-	lanzarAleatorioTodos
+	beq $a0, 0, generarAleatorioEsquinas
+	lanzarAleatorioEsquinas
 	
-lanzarAleatorioTodos:
-	beq $a0, 1, _adicionarSimbolo1
-	beq $a0, 2, _adicionarSimbolo2
-	beq $a0, 3, _adicionarSimbolo3
-	beq $a0, 4, _adicionarSimbolo4
-	beq $a0, 5, _adicionarSimbolo5
-	beq $a0, 6, _adicionarSimbolo6
-	beq $a0, 7, _adicionarSimbolo7
-	beq $a0, 8, _adicionarSimbolo8
-	beq $a0, 9, _adicionarSimbolo9	
+lanzarAleatorioEsquinas:
+	beq $a0, 0, _adicionarSimbolo1
+	beq $a0, 1, _adicionarSimbolo3
+	beq $a0, 2, _adicionarSimbolo7
+	beq $a0, 3, _adicionarSimbolo9
 	#li $v0, 1   # 1 is the system call code to show an int number
 	#syscall     # as I said your generated number is at $a0, so it will be printed
 	
