@@ -745,10 +745,62 @@ revisarJugadaCentro:
 	beq $t0, 0, jugadasBajaPrioridad #sino
 	
 revisarJugadaCentroYEsquina:
-	li $t0, 0 # asignar valor de 0 a t1
-	# sumar valor de las esquinas
+	#si humano jugó en 5 y 6
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
 	add $t0,$t5,$t9 #sumar
 	beq $t0, 2, _adicionarSimbolo3
+	
+	#si humano jugó en una en centro en periferia y otra en una esquina contraria
+	
+	#2 en centro y 9 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t2,$t9 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
+	#2 en centro y 7 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t2,$t7 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
+	#4 en centro y 3 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t3 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
+	#4 en centro y 9 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t9 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
+	#8 en centro y 1 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t8,$t1 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
+	#8 en centro y 3 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t8,$t3 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
+	#6 en centro y 1 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t6,$t1 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
+	#6 en centro y 7 en esquina	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t6,$t7 #sumar
+	beq $t0, 2, _adicionarSimbolo5
+	
 	b jugadasAltaPrioridad
 	
 validarPosicion1Ocupada: 
