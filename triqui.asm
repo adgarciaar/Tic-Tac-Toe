@@ -728,31 +728,74 @@ jugadasBajaPrioridad:
 	blt $s2, 3, hacerJugadaMaquinaTranversal2BajaPrioridad #si la línea sólo tiene 1 marca	
 	
 revisarJugadaCentro:
-	li $t0, 0 # asignar valor de 0 a t1
+	li $t0, 0 # asignar valor de 0 a t0
 	# sumar valor de las esquinas
 	add $t0,$t1,$t3 #sumar
 	add $t0,$t0,$t7 #sumar
 	add $t0,$t0,$t9 #sumar
 	beq $t0, 1, _adicionarSimbolo5 #si el humano marca en una esquina entonces marcar en centro
 	
-	beq $t5, 1, generarAleatorioEsquinas
+	beq $t5, 1, generarAleatorioEsquinas #si marcó en el centro del tablero marcar en una esquina
 	
-	li $t0, 0 # asignar valor de 0 a t1
+	li $t0, 0 # asignar valor de 0 a t0
 	# sumar valor de los centros en periferia
 	add $t0,$t2,$t4 #sumar
 	add $t0,$t0,$t8 #sumar
 	add $t0,$t0,$t6 #sumar
-	
-	beq $t0, 1, generarAleatorioEsquinas #sino
+	beq $t0, 1, lanzarAleatorioEsquinaAdyacente #sino
 	
 	beq $t0, 0, irPorLineaEnCeros #sino
+	
+lanzarAleatorioEsquinaAdyacente:
+	addi $sp, $sp, -4 #pedir espacio en pila
+	sw $ra, 0($sp) #save return address to stack
+	
+	jal generarAleatorioEsquinaAdyacente
+	
+	lw $ra, 0($sp) #load return address
+	addi $sp, $sp, 4  #realocar espacio en pila
+	
+	beq $t4, 1, aleatorioEsquinaAdyacente1
+	beq $t8, 1, aleatorioEsquinaAdyacente2
+	beq $t6, 1, aleatorioEsquinaAdyacente3
+	beq $t2, 1, aleatorioEsquinaAdyacente4
+	
+aleatorioEsquinaAdyacente1:
+	beq $s5, 0, _adicionarSimbolo1
+	beq $s5, 1, _adicionarSimbolo7
+	beq $s5, 2, _adicionarSimbolo1
+	beq $s5, 3, _adicionarSimbolo7
+	
+aleatorioEsquinaAdyacente2:
+	beq $s5, 0, _adicionarSimbolo7
+	beq $s5, 1, _adicionarSimbolo9
+	beq $s5, 2, _adicionarSimbolo7
+	beq $s5, 3, _adicionarSimbolo9
+	
+aleatorioEsquinaAdyacente3:
+	beq $s5, 0, _adicionarSimbolo3
+	beq $s5, 1, _adicionarSimbolo9
+	beq $s5, 2, _adicionarSimbolo3
+	beq $s5, 3, _adicionarSimbolo9
+	
+aleatorioEsquinaAdyacente4:
+	beq $s5, 0, _adicionarSimbolo1
+	beq $s5, 1, _adicionarSimbolo3
+	beq $s5, 2, _adicionarSimbolo1
+	beq $s5, 3, _adicionarSimbolo3
+	
+generarAleatorioEsquinaAdyacente:
+	li $v0, 42  # 42 is system call code to generate random int
+	li $a1, 3 # $a1 is where you set the upper bound
+	syscall     # your generated number will be at $a0
+	move $s5, $a0
+	jr $ra
 	
 generarAleatorioLinea:
 	li $v0, 42  # 42 is system call code to generate random int
 	li $a1, 2 # $a1 is where you set the upper bound
 	syscall     # your generated number will be at $a0
 	move $s5, $a0
-	#beq $a0, 0, generarAleatorioLinea
 	jr $ra
 	
 generarAleatorioEsquinas:
@@ -941,6 +984,59 @@ revisarJugadaCentroPeriferiayEsquina:
 	add $t0,$t6,$t7 #sumar
 	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
 	
+	b revisarJugadaDosCentrosPeriferia
+	
+revisarJugadaDosCentrosPeriferia:
+	#si humano jugó en dos centros en periferia
+	
+	#2 en centro y 4 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t2,$t4 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+	
+	#2 en centro y 6 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t2,$t6 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+	
+	#4 en centro y 2 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t2 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+	
+	#4 en centro y 8 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t8 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+	
+	#8 en centro y 4 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t8,$t4 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+	
+	#8 en centro y 6 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t8,$t6 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+	
+	#6 en centro y 2 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t6,$t2 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+	
+	#6 en centro y 8 en centro	
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t6,$t8 #sumar
+	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
+
 	b jugadasAltaPrioridad
 	
 validarPosicion1Ocupada: 
