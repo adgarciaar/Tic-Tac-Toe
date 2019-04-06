@@ -819,6 +819,8 @@ evitarJugadaCentroPeriferiayEsquina:
 	beq $t7, -1, evitarJugadaCentroPeriferiayEsquina2 #esquina 2
 	beq $t9, -1, evitarJugadaCentroPeriferiayEsquina3 #esquina 3
 	beq $t3, -1, evitarJugadaCentroPeriferiayEsquina4 #esquina 4
+	
+	b revisarJugadaDosCentrosPeriferia
 
 evitarJugadaCentroPeriferiayEsquina1:
 	li $t0, 0 # asignar valor de 0 a t0
