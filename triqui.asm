@@ -871,7 +871,7 @@ revisarJugadaPeligrosaCentroTablaYEsquina1:
 	add $t0,$t5,$t9 #sumar
 	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina1
 	
-	b jugadasAltaPrioridad
+	b revisarJugadaCentroPeriferiayEsquina
 	
 revisarJugadaPeligrosaCentroTablaYEsquina2:
 	li $t0, 0 # asignar valor de 0 a t0
@@ -879,7 +879,7 @@ revisarJugadaPeligrosaCentroTablaYEsquina2:
 	add $t0,$t5,$t3 #sumar
 	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina2
 	
-	b jugadasAltaPrioridad
+	b revisarJugadaCentroPeriferiayEsquina
 	
 revisarJugadaPeligrosaCentroTablaYEsquina3:
 	li $t0, 0 # asignar valor de 0 a t0
@@ -887,7 +887,7 @@ revisarJugadaPeligrosaCentroTablaYEsquina3:
 	add $t0,$t5,$t1 #sumar
 	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina3
 	
-	b jugadasAltaPrioridad
+	b revisarJugadaCentroPeriferiayEsquina
 	
 revisarJugadaPeligrosaCentroTablaYEsquina4:
 	li $t0, 0 # asignar valor de 0 a t0
@@ -895,7 +895,7 @@ revisarJugadaPeligrosaCentroTablaYEsquina4:
 	add $t0,$t5,$t7 #sumar
 	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina4
 	
-	b jugadasAltaPrioridad
+	b revisarJugadaCentroPeriferiayEsquina
 
 revisarJugadaCentroYEsquina:
 	#revisar las dos diagonales
@@ -905,8 +905,9 @@ revisarJugadaCentroYEsquina:
 	beq $t9, -1, revisarJugadaPeligrosaCentroTablaYEsquina3 #esquina 3
 	beq $t3, -1, revisarJugadaPeligrosaCentroTablaYEsquina4 #esquina 4
 	
+revisarJugadaCentroPeriferiayEsquina:	
 	#si humano jugó en una en centro en periferia y otra en una esquina contraria
-	
+
 	#2 en centro y 9 en esquina	
 	li $t0, 0 # asignar valor de 0 a t0
 	# sumar valores
