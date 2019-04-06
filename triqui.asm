@@ -263,14 +263,14 @@ jugadasAltaPrioridad:
 	add $t0,$t0,$t3 #sumar
 	beq $t0, 2, hacerJugadaMaquinaTranversal2AltaPrioridad # va a ganar el humano
 	
-	b jugadasMediaPrioridad
-	
-jugadasMediaPrioridad:	
-	######################################################
-	#jugadas de media prioridad
-	#si se tiene una marca en una posible línea para alguna opción entonces marcar la segunda
-	#sólo si la línea sirve para ganar, es decir, si no hay marca del humano en esa línea
-	
+	b jugadaMediaPrioridadFila1
+
+######################################################
+#jugadas de media prioridad
+#si se tiene una marca en una posible línea para alguna opción entonces marcar la segunda
+#sólo si la línea sirve para ganar, es decir, si no hay marca del humano en esa línea
+
+jugadaMediaPrioridadFila1:
 	#revisar si la 1ra fila está ocupada
 	
 	# validar | 1 | 2 | 3 |
@@ -287,13 +287,11 @@ jugadasMediaPrioridad:
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t1,$t2 #sumar
-	add $t0,$t0,$t3 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
-	#si la línea sólo tiene 1 marca entonces s2=1
+	beq $s2, 1, hacerJugadaMaquinaFila1MediaPrioridad
 	
-	beq $t0, 0, hacerJugadaMaquinaFila1MediaPrioridad
+	b jugadaMediaPrioridadFila2
+	
+jugadaMediaPrioridadFila2:
 	
 	# validar | 4 | 5 | 6 |
 	
@@ -306,14 +304,13 @@ jugadasMediaPrioridad:
 	jal validarPosicion6Ocupada
 	
 	lw $ra, 0($sp) #load return address
-	addi $sp, $sp, 4  #realocar espacio en pila
+	addi $sp, $sp, 4  #realocar espacio en pila	
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t4,$t5 #sumar
-	add $t0,$t0,$t6 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	beq $s2, 1, hacerJugadaMaquinaFila2MediaPrioridad #si la línea sólo tiene 1 marca
 	
-	beq $t0, 0, hacerJugadaMaquinaFila2MediaPrioridad #si la línea sólo tiene 1 marca
+	b jugadaMediaPrioridadFila3
+	
+jugadaMediaPrioridadFila3:
 	
 	# validar | 7 | 8 | 9 |
 	
@@ -328,13 +325,11 @@ jugadasMediaPrioridad:
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t7,$t8 #sumar
-	add $t0,$t0,$t9 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	beq $s2, 1, hacerJugadaMaquinaFila3MediaPrioridad #si la línea sólo tiene 1 marca
 	
-	beq $t0, 0, hacerJugadaMaquinaFila3MediaPrioridad #si la línea sólo tiene 1 marca
+	b jugadaMediaPrioridadColumna1
 	
+jugadaMediaPrioridadColumna1:	
 	#validar
 	# | 1 | 
 	# | 4 |
@@ -351,13 +346,11 @@ jugadasMediaPrioridad:
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t1,$t4 #sumar
-	add $t0,$t0,$t7 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	beq $s2, 1, hacerJugadaMaquinaColumna1MediaPrioridad #si la línea sólo tiene 1 marca
 	
-	beq $t0, 0, hacerJugadaMaquinaColumna1MediaPrioridad #si la línea sólo tiene 1 marca 
-	
+	b jugadaMediaPrioridadColumna2
+
+jugadaMediaPrioridadColumna2:
 	#validar
 	# | 2 |
 	# | 5 |
@@ -374,12 +367,11 @@ jugadasMediaPrioridad:
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t2,$t5 #sumar
-	add $t0,$t0,$t8 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	beq $s2, 1, hacerJugadaMaquinaColumna2MediaPrioridad #si la línea sólo tiene 1 marca
 	
-	beq $t0, 0, hacerJugadaMaquinaColumna2MediaPrioridad #si la línea sólo tiene 1 marca
+	b jugadaMediaPrioridadColumna3
+	
+jugadaMediaPrioridadColumna3:
 	
 	#validar
 	# | 3 |
@@ -397,13 +389,11 @@ jugadasMediaPrioridad:
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t3,$t6 #sumar
-	add $t0,$t0,$t9 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	beq $s2, 1, hacerJugadaMaquinaColumna3MediaPrioridad #si la línea sólo tiene 1 marca
 	
-	beq $t0, 0, hacerJugadaMaquinaColumna3MediaPrioridad #si la línea sólo tiene 1 marca
+	b jugadaMediaPrioridadTransversal1
 	
+jugadaMediaPrioridadTransversal1:	
 	#validar
 	# | 1 |   |   |
 	# |   | 5 |   |
@@ -420,13 +410,11 @@ jugadasMediaPrioridad:
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t1,$t5 #sumar
-	add $t0,$t0,$t9 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
+	beq $s2, 1, hacerJugadaMaquinaTranversal1MediaPrioridad #si la línea sólo tiene 1 marca
 	
-	beq $t0, 0, hacerJugadaMaquinaTranversal1MediaPrioridad #si la línea sólo tiene 1 marca
-	
+	b jugadaMediaPrioridadTransversal2
+
+jugadaMediaPrioridadTransversal2:
 	#validar
 	# |   |   | 3 |
 	# |   | 5 |   |
@@ -443,12 +431,7 @@ jugadasMediaPrioridad:
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
 	
-	li $t0, 0 # asignar valor de 0 a t1
-	add $t0,$t7,$t5 #sumar
-	add $t0,$t0,$t3 #sumar
-	add $t0, $t0, $s2 #sumar s2 y t0, si da 0 entonces la línea tiene sólo una marca
-	
-	beq $t0, 0, hacerJugadaMaquinaTranversal2MediaPrioridad #si la línea sólo tiene 1 marca
+	beq $s2, 1, hacerJugadaMaquinaTranversal2MediaPrioridad #si la línea sólo tiene 1 marca
 	
 	b irPorLineaEnCeros
 
@@ -905,6 +888,8 @@ revisarJugadaCentroYEsquina:
 	beq $t9, -1, revisarJugadaPeligrosaCentroTablaYEsquina3 #esquina 3
 	beq $t3, -1, revisarJugadaPeligrosaCentroTablaYEsquina4 #esquina 4
 	
+	b revisarJugadaCentroPeriferiayEsquina
+	
 revisarJugadaCentroPeriferiayEsquina:	
 	#si humano jugó en una en centro en periferia y otra en una esquina contraria
 
@@ -1053,6 +1038,8 @@ hacerJugadaMaquinaFila1MediaPrioridad:
 	beq $t1, -1, _adicionarSimbolo2 #si la casilla 1 está ocupada entonces ir por la 2
 	beq $t2, -1, _adicionarSimbolo1 #si la casilla 2 está ocupada entonces ir por la 1 o 3
 	beq $t3, -1, _adicionarSimbolo2 #si la casilla 3 está ocupada entonces ir por la 2
+	
+	b jugadaMediaPrioridadFila2
 
 hacerJugadaMaquinaFila2MediaPrioridad:
 	# | 4 | 5 | 6 |
@@ -1060,11 +1047,15 @@ hacerJugadaMaquinaFila2MediaPrioridad:
 	beq $t5, -1, _adicionarSimbolo4 #si la casilla 5 está ocupada entonces ir por la 4 o 6
 	beq $t6, -1, _adicionarSimbolo5 #si la casilla 6 está ocupada entonces ir por la 5
 	
+	b jugadaMediaPrioridadFila3
+	
 hacerJugadaMaquinaFila3MediaPrioridad:
 	# | 7 | 8 | 9 |
 	beq $t7, -1, _adicionarSimbolo8 #si la casilla 7 está ocupada entonces ir por la 8
 	beq $t8, -1, _adicionarSimbolo7 #si la casilla 8 está ocupada entonces ir por la 7 o 9
 	beq $t9, -1, _adicionarSimbolo8 #si la casilla 9 está ocupada entonces ir por la 8
+	
+	b jugadaMediaPrioridadColumna1
 	
 hacerJugadaMaquinaColumna1MediaPrioridad:
 	# | 1 | 
@@ -1074,6 +1065,8 @@ hacerJugadaMaquinaColumna1MediaPrioridad:
 	beq $t4, -1, _adicionarSimbolo7 #si la casilla 4 está ocupada entonces ir por la 1 o 7
 	beq $t7, -1, _adicionarSimbolo4 #si la casilla 7 está ocupada entonces ir por la 4
 	
+	b jugadaMediaPrioridadColumna2
+	
 hacerJugadaMaquinaColumna2MediaPrioridad:
 	# | 2 |
 	# | 5 |
@@ -1081,6 +1074,8 @@ hacerJugadaMaquinaColumna2MediaPrioridad:
 	beq $t2, -1, _adicionarSimbolo5 #si la casilla 2 está ocupada entonces ir por la 5
 	beq $t5, -1, _adicionarSimbolo2 #si la casilla 5 está ocupada entonces ir por la 2 o 8
 	beq $t8, -1, _adicionarSimbolo5 #si la casilla 8 está ocupada entonces ir por la 5
+	
+	b jugadaMediaPrioridadColumna3
 
 hacerJugadaMaquinaColumna3MediaPrioridad:
 	# | 3 |
@@ -1090,6 +1085,8 @@ hacerJugadaMaquinaColumna3MediaPrioridad:
 	beq $t6, -1, _adicionarSimbolo3 #si la casilla 6 está ocupada entonces ir por la 3 o 9
 	beq $t9, -1, _adicionarSimbolo6 #si la casilla 9 está ocupada entonces ir por la 6
 	
+	b jugadaMediaPrioridadTransversal1
+	
 hacerJugadaMaquinaTranversal1MediaPrioridad:
 	# | 1 |   |   |
 	# |   | 5 |   |
@@ -1098,6 +1095,8 @@ hacerJugadaMaquinaTranversal1MediaPrioridad:
 	beq $t5, -1, _adicionarSimbolo1 #si la casilla 5 está ocupada entonces ir por la 1 o 9
 	beq $t9, -1, _adicionarSimbolo5 #si la casilla 9 está ocupada entonces ir por la 5
 	
+	b jugadaMediaPrioridadTransversal2
+	
 hacerJugadaMaquinaTranversal2MediaPrioridad:
 	# |   |   | 3 |
 	# |   | 5 |   |
@@ -1105,6 +1104,8 @@ hacerJugadaMaquinaTranversal2MediaPrioridad:
 	beq $t7, -1, _adicionarSimbolo5 #si la casilla 7 está ocupada entonces ir por la 5
 	beq $t5, -1, _adicionarSimbolo7 #si la casilla 6 está ocupada entonces ir por la 7 o 3
 	beq $t3, -1, _adicionarSimbolo5 #si la casilla 3 está ocupada entonces ir por la 5
+	
+	b irPorLineaEnCeros
 
 hacerJugadaLineaCeroFila1:
 	# | 1 | 2 | 3 |
