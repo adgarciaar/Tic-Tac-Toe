@@ -144,6 +144,8 @@ pedirPosicionMaquina:
 	
 	beq $v1,4, revisarJugadaCentroYEsquina #si es la segunda jugada de la máquina (4ta en total)
 	
+	beq $v1,6, revisarJugadaRiesgosa
+	
 	b jugadasAltaPrioridad
 
 jugadasAltaPrioridad:
@@ -1057,6 +1059,202 @@ revisarJugadaDosCentrosPeriferia:
 	add $t0,$t6,$t8 #sumar
 	beq $t0, 2, evitarJugadaCentroPeriferiayEsquina
 
+	b jugadasAltaPrioridad
+	
+revisarJugadaRiesgosa:
+
+	#caso 1
+	
+	#  --- --- ---
+	# | A |   | X |
+	#  --- --- ---
+	# | X | O | O |
+	#  --- --- ---
+	# |   | X |   |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t8,$t3 #sumar
+	add $t0,$t0,$t4 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa1
+	
+	#caso 2
+	
+	#  --- --- ---
+	# | X |   | A |
+	#  --- --- ---
+	# | O | O | X |
+	#  --- --- ---
+	# |   | X |   |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t8,$t1 #sumar
+	add $t0,$t0,$t6 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa2
+	
+	#caso 3
+	
+	#  --- --- ---
+	# |   | O | X |
+	#  --- --- ---
+	# | X | O |   |
+	#  --- --- ---
+	# |   | X | A |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t3 #sumar
+	add $t0,$t0,$t8 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa3
+	
+	#caso 4
+	
+	#  --- --- ---
+	# |   | X | A |
+	#  --- --- ---
+	# | X | O |   |
+	#  --- --- ---
+	# |   | O | X |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t9 #sumar
+	add $t0,$t0,$t2 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa4
+	
+	#caso 5
+	
+	#  --- --- ---
+	# |   | X |   |
+	#  --- --- ---
+	# | O | O | X |
+	#  --- --- ---
+	# | X |   | A |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t2,$t7 #sumar
+	add $t0,$t0,$t6 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa5
+	
+	#caso 6
+	
+	#  --- --- ---
+	# |   | X |   |
+	#  --- --- ---
+	# | X | O | O |
+	#  --- --- ---
+	# | A |   | X |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t2,$t9 #sumar
+	add $t0,$t0,$t4 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa6
+	
+	#caso 7
+	
+	#  --- --- ---
+	# | X | O |   |
+	#  --- --- ---
+	# |   | O | X |
+	#  --- --- ---
+	# | A | X |   |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t8,$t1 #sumar
+	add $t0,$t0,$t6 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa7
+	
+	#caso 8
+	
+	#  --- --- ---
+	# | A | X |   |
+	#  --- --- ---
+	# |   | O | X |
+	#  --- --- ---
+	# | X | O |   |
+	#  --- --- ---
+		
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t6,$t7 #sumar
+	add $t0,$t0,$t2 #sumar
+	beq $t0, 3, evitarJugadaRiesgosa8
+
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa1:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t5,$t6 #sumar
+	beq $t0, -2, _adicionarSimbolo1
+	
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa2:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t5 #sumar
+	beq $t0, -2, _adicionarSimbolo3
+	
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa3:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t2,$t5 #sumar
+	beq $t0, -2, _adicionarSimbolo9
+	
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa4:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t5,$t8 #sumar
+	beq $t0, -2, _adicionarSimbolo3
+	
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa5:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t4,$t5 #sumar
+	beq $t0, -2, _adicionarSimbolo9
+	
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa6:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t5,$t6 #sumar
+	beq $t0, -2, _adicionarSimbolo7
+	
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa7:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t5,$t2 #sumar
+	beq $t0, -2, _adicionarSimbolo7
+	
+	b jugadasAltaPrioridad
+	
+evitarJugadaRiesgosa8:
+	li $t0, 0 # asignar valor de 0 a t0
+	# sumar valores
+	add $t0,$t5,$t8 #sumar
+	beq $t0, -2, _adicionarSimbolo1
+	
 	b jugadasAltaPrioridad
 	
 validarPosicion1Ocupada: 
