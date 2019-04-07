@@ -1899,13 +1899,13 @@ x_uno:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 30
+	li $s7, 25
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	addi $s0, $s0, 140
+	addi $s0, $s0, 116
 	b primeira_linha
 	nop
 	
@@ -1913,104 +1913,104 @@ x_dos:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 30
+	li $s7, 25
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	addi $s0, $s0, 440	
+	addi $s0, $s0, 452	
 	b primeira_linha
 	nop	
 x_tres:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 30
+	li $s7, 25
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	add $s0, $s0, 760
+	add $s0, $s0, 792
 	b primeira_linha
 	nop	
 x_cuatro:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 100
+	li $s7, 108
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	add $s0, $s0, 140	
+	add $s0, $s0, 116	
 	b primeira_linha
 	nop
 x_cinco:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 100
+	li $s7, 108
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	add $s0, $s0, 440
+	add $s0, $s0, 452
 	b primeira_linha
 	nop
 x_seis:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 100
+	li $s7, 108
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	add $s0, $s0, 760
+	add $s0, $s0, 792
 	b primeira_linha
 	nop	
 x_siete:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 170
+	li $s7, 194
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	addi $s0, $s0, 140
+	addi $s0, $s0, 116
 	b primeira_linha
 	nop
 x_ocho:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 170
+	li $s7, 194
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	add $s0, $s0, 440
+	add $s0, $s0, 452
 	b primeira_linha
 	nop
 x_nueve:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#VERTICAL
-	li $s7, 170
+	li $s7, 194
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
 	#HORIZONTAL
-	add $s0, $s0, 760
+	add $s0, $s0, 792
 	b primeira_linha
 	nop
 	
@@ -2037,9 +2037,9 @@ circulo_uno:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 120
+	addi $s0, $s0, 100
 	#VERTICAL
-	li $s7, 30
+	li $s7, 27
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2051,9 +2051,9 @@ circulo_dos:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 420
+	addi $s0, $s0, 432
 	#VERTICAL
-	li $s7, 30
+	li $s7, 27
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2064,9 +2064,9 @@ circulo_tres:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 740
+	addi $s0, $s0, 772
 	#VERTICAL
-	li $s7, 30
+	li $s7, 27
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2077,9 +2077,9 @@ circulo_cuatro:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 120
+	addi $s0, $s0, 100
 	#VERTICAL
-	li $s7, 100
+	li $s7, 112
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2090,9 +2090,9 @@ circulo_cinco:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 420
+	addi $s0, $s0, 432
 	#VERTICAL
-	li $s7, 100
+	li $s7, 112
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2103,9 +2103,9 @@ circulo_seis:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 740
+	addi $s0, $s0, 772
 	#VERTICAL	
-	li $s7, 100
+	li $s7, 112
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2116,9 +2116,9 @@ circulo_siete:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 120
+	addi $s0, $s0, 100
 	#VERTICAL
-	li $s7, 170
+	li $s7, 195
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2129,9 +2129,9 @@ circulo_ocho:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 420
+	addi $s0, $s0, 432
 	#VERTICAL
-	li $s7, 170
+	li $s7, 195
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
@@ -2142,9 +2142,9 @@ circulo_nueve:
 	lui $s0, 0x1001
 	ori $s6, $0, 0
 	#HORIZONTAL
-	addi $s0, $s0, 740
+	addi $s0, $s0, 772
 	#VERTICAL
-	li $s7, 170
+	li $s7, 195
 	li $t0, 1024
 	mult $s7, $t0
 	mflo $s3
