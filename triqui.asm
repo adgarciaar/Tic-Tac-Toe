@@ -71,12 +71,12 @@ imprimirMenuInicio:
 	
 nuevoJuegoJugadores:
 
-	li $s5, 0xFFFFFF #color blanco en hexa
-	jal imprimirTablaGUI
-	nop
-	
 	li $s5, 0 #color negro en hexa
 	jal limpiarJugadasGUI
+	nop
+	
+	li $s5, 0xFFFFFF #color blanco en hexa
+	jal imprimirTablaGUI
 	nop
 	
 	li $s1, 1 # para saber si es entre humanos
@@ -88,12 +88,12 @@ nuevoJuegoJugadores:
 	
 nuevoJuegoContraMaquina:
 
-	li $s5, 0xFFFFFF #color blanco en hexa
-	jal imprimirTablaGUI
-	nop
-	
 	li $s5, 0 #color negro en hexa
 	jal limpiarJugadasGUI
+	nop
+	
+	li $s5, 0xFFFFFF #color blanco en hexa
+	jal imprimirTablaGUI
 	nop
 
 	li $s1, 2 # para saber si es entre humano y máquina
@@ -1882,6 +1882,7 @@ validarTresEnLinea:
 	# validar | 1 | 2 | 3 |
 	add $t0,$t1,$t2 #sumar
 	add $t0,$t0,$t3 #sumar
+	li $v0, 1
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
 	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
@@ -1889,6 +1890,7 @@ validarTresEnLinea:
 	# validar | 4 | 5 | 6 |
 	add $t0,$t4,$t5 #sumar
 	add $t0,$t0,$t6 #sumar
+	li $v0, 2
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
 	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
@@ -1896,6 +1898,7 @@ validarTresEnLinea:
 	# validar | 7 | 8 | 9 |
 	add $t0,$t7,$t8 #sumar
 	add $t0,$t0,$t9 #sumar
+	li $v0, 3
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
 	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
@@ -1904,6 +1907,7 @@ validarTresEnLinea:
 	# | 1 | 
 	# | 4 |
 	# | 7 | 
+	li $v0, 4
 	add $t0,$t1,$t4 #sumar
 	add $t0,$t0,$t7 #sumar
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
@@ -1916,6 +1920,7 @@ validarTresEnLinea:
 	# | 8 |
 	add $t0,$t2,$t5 #sumar
 	add $t0,$t0,$t8 #sumar
+	li $v0, 5
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
 	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
@@ -1926,6 +1931,7 @@ validarTresEnLinea:
 	# | 9 |
 	add $t0,$t3,$t6 #sumar
 	add $t0,$t0,$t9 #sumar
+	li $v0, 6
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
 	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
@@ -1936,6 +1942,7 @@ validarTresEnLinea:
 	# |   |   | 9 |
 	add $t0,$t1,$t5 #sumar
 	add $t0,$t0,$t9 #sumar
+	li $v0, 7
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
 	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
@@ -1946,18 +1953,22 @@ validarTresEnLinea:
 	# | 7 |   |   |
 	add $t0,$t7,$t5 #sumar
 	add $t0,$t0,$t3 #sumar
+	li $v0, 8
 	beq $t0, 3, ganaJugador1 # si la suma da 3 entonces gana jugador 1
 	beq $t0, -3, ganaJugador2 # si la suma da 6 entonces gana jugador 2
 	
 	jr $ra #retornar a ciclo de turnos
 	
 ganaJugador1:
+	jal dibujarTriqui
 	la $a0 ganaPartidaJugador1 # load address of mensaje
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	b main #retorna a main
 
 ganaJugador2:
+	jal dibujarTriqui
+	nop
 	beq $s1, 2, ganaOrdenador
 	la $a0 ganaPartidaJugador2 # load address of mensaje
 	li $v0 4 # system call code for print_str
@@ -1967,7 +1978,7 @@ ganaJugador2:
 ganaOrdenador:
 	la $a0 ganaMaquina # load address of mensaje
 	li $v0 4 # system call code for print_str
-	syscall # print the string
+	syscall # print the string	
 	b main #retorna a main
 
 empateJugadores:
@@ -1975,6 +1986,17 @@ empateJugadores:
 	li $v0 4 # system call code for print_str
 	syscall # print the string
 	b main #retorna a main
+	
+dibujarTriqui:
+	li $s5, 0xFFFFFF #color blanco en hexa
+	beq $v0, 1, marcarTriquiFila1
+	beq $v0, 2, marcarTriquiFila2
+	beq $v0, 3, marcarTriquiFila3
+	beq $v0, 4, marcarTriquiColumna1
+	beq $v0, 5, marcarTriquiColumna2
+	beq $v0, 6, marcarTriquiColumna3
+	beq $v0, 7, marcarTriquiDiagonal1
+	beq $v0, 8, marcarTriquiDiagonal2
 
 fin:
 	#imprimir adiós
@@ -2008,6 +2030,15 @@ limpiarJugadasGUI:
 	jal circulo_siete
 	jal circulo_ocho
 	jal circulo_nueve
+	
+	jal marcarTriquiFila1
+	jal marcarTriquiFila2
+	jal marcarTriquiFila3
+	jal marcarTriquiColumna1
+	jal marcarTriquiColumna2
+	jal marcarTriquiColumna3
+	jal marcarTriquiDiagonal1
+	jal marcarTriquiDiagonal2
 	
 	lw $ra, 0($sp) #load return address
 	addi $sp, $sp, 4  #realocar espacio en pila
@@ -2424,3 +2455,198 @@ pintarCirculo:
 		
 		jr $ra
 		nop
+		
+marcarTriquiDiagonal1:
+	lui $s0, 0x1001
+	ori $s6, $0, 0
+	#VERTICAL
+	li $s7, 25
+	li $t0, 1024
+	mult $s7, $t0
+	mflo $s3
+	add $s0, $s0, $s3
+	#HORIZONTAL
+	addi $s0, $s0, 116
+	b dibujarLineaDiagonal1
+	nop
+	
+marcarTriquiDiagonal2:	
+	lui $s0, 0x1001
+	ori $s6, $0, 0
+	#VERTICAL
+	li $s7, 194
+	li $t0, 1024
+	mult $s7, $t0
+	mflo $s3
+	add $s0, $s0, $s3
+	#HORIZONTAL
+	addi $s0, $s0, 116
+	
+	procesoPrimeraLineaX:
+		addi $s0, $s0, 1024
+		addi $s0, $s0, 4
+		#sw $s5, 0($s0)
+		addi $s6, $s6, 1
+		bne $s6, 30, procesoPrimeraLineaX
+		nop
+		subu $s0, $s0, 120
+		ori $s6, $0, 0
+	
+	b dibujarLineaDiagonal2
+	nop	
+	
+dibujarLineaDiagonal1:
+	addi $s0, $s0, 1024
+	addi $s0, $s0, 4
+	sw $s5, 0($s0)
+	addi $s6, $s6, 1
+	bne $s6, 200, dibujarLineaDiagonal1
+	nop
+	jr $ra
+	nop
+	
+dibujarLineaDiagonal2:
+	sub $s0, $s0, 1024
+	addi $s0, $s0, 4
+	sw $s5, 0($s0)
+	addi $s6, $s6, 1	
+	bne $s6, 200, dibujarLineaDiagonal2
+	nop
+	jr $ra
+	nop
+	
+marcarTriquiFila1:
+	lui $s0, 0x1001 #1er pixel arriba a la izquierda
+
+	li $s3, 1024 #constante para saltar entre filas
+	li $s4, 40 #contador para filas
+	mult $s3, $s4 #multiplicación entre 1024 con el # de fila
+	mflo $s4 #traer resultado de la multiplicación anterior a s4
+
+	add $s0, $s0, $s4 #para correr verticalmente sumar a s0 
+		#el resultado de multiplicación anterior
+
+	addi $s0, $s0, 0 #correr 56 pixeles a la derecha
+
+	li $s6, 0 # contador
+	
+	dibujarLineaFila1:	
+		sw $s5, 0($s0) #pintar el pixel del color definido	
+		addi $s0, $s0, 4 #aumentar s0 en 4 bytes para ir a siguiente pixel a la derecha	
+		addi $s6, $s6, 1 #incrementar en 1 el contador
+		bne $s6, 256, dibujarLineaFila1
+		nop
+	
+	jr $ra
+	nop
+
+marcarTriquiFila2:
+	lui $s0, 0x1001 #1er pixel arriba a la izquierda
+
+	li $s3, 1024 #constante para saltar entre filas
+	li $s4, 126 #contador para filas
+	mult $s3, $s4 #multiplicación entre 1024 con el # de fila
+	mflo $s4 #traer resultado de la multiplicación anterior a s4
+
+	add $s0, $s0, $s4 #para correr verticalmente sumar a s0 
+		#el resultado de multiplicación anterior
+
+	addi $s0, $s0, 0 #correr 56 pixeles a la derecha
+
+	li $s6, 0 # contador
+	
+	dibujarLineaFila2:	
+		sw $s5, 0($s0) #pintar el pixel del color definido	
+		addi $s0, $s0, 4 #aumentar s0 en 4 bytes para ir a siguiente pixel a la derecha	
+		addi $s6, $s6, 1 #incrementar en 1 el contador
+		bne $s6, 256, dibujarLineaFila2
+		nop
+	
+	jr $ra
+	nop
+
+marcarTriquiFila3:
+	lui $s0, 0x1001 #1er pixel arriba a la izquierda
+
+	li $s3, 1024 #constante para saltar entre filas
+	li $s4, 207 #contador para filas
+	mult $s3, $s4 #multiplicación entre 1024 con el # de fila
+	mflo $s4 #traer resultado de la multiplicación anterior a s4
+
+	add $s0, $s0, $s4 #para correr verticalmente sumar a s0 
+		#el resultado de multiplicación anterior
+
+	addi $s0, $s0, 0 #correr 56 pixeles a la derecha
+
+	li $s6, 0 # contador
+	
+	dibujarLineaFila3:	
+		sw $s5, 0($s0) #pintar el pixel del color definido	
+		addi $s0, $s0, 4 #aumentar s0 en 4 bytes para ir a siguiente pixel a la derecha	
+		addi $s6, $s6, 1 #incrementar en 1 el contador
+		bne $s6, 256, dibujarLineaFila3
+		nop
+	
+	jr $ra
+	nop
+
+marcarTriquiColumna1:
+	lui $s0, 0x1001
+	li $s4, 0
+	mult $s3, $s4
+	mflo $s4
+	#VERTICAL
+	add $s0, $s0, $s4
+	#HORIZONTAL
+	addi $s0, $s0, 172
+	li $s6, 0
+	
+	dibujarLineaColumna1:
+		addi $s0, $s0, 1024
+		sw $s5, 0($s0)
+		addi $s6, $s6, 1
+		bne $s6, 256, dibujarLineaColumna1
+		nop
+	jr $ra
+	nop
+
+marcarTriquiColumna2:
+	lui $s0, 0x1001
+	li $s4, 0
+	mult $s3, $s4
+	mflo $s4
+	#VERTICAL
+	add $s0, $s0, $s4
+	#HORIZONTAL
+	addi $s0, $s0, 508
+	li $s6, 0
+	
+	dibujarLineaColumna2:
+		addi $s0, $s0, 1024
+		sw $s5, 0($s0)
+		addi $s6, $s6, 1
+		bne $s6, 256, dibujarLineaColumna2
+		nop
+	jr $ra
+	nop
+	
+marcarTriquiColumna3:
+	lui $s0, 0x1001
+	li $s4, 0
+	mult $s3, $s4
+	mflo $s4
+	#VERTICAL
+	add $s0, $s0, $s4
+	#HORIZONTAL
+	addi $s0, $s0, 844
+	li $s6, 0
+	
+	dibujarLineaColumna3:
+		addi $s0, $s0, 1024
+		sw $s5, 0($s0)
+		addi $s6, $s6, 1
+		bne $s6, 256, dibujarLineaColumna3
+		nop
+	
+	jr $ra
+	nop
