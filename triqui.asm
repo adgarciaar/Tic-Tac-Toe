@@ -2104,7 +2104,7 @@ x_uno:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	addi $s0, $s0, 116
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop
 	
 x_dos:
@@ -2118,7 +2118,7 @@ x_dos:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	addi $s0, $s0, 452	
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop	
 x_tres:
 	lui $s0, 0x1001
@@ -2131,7 +2131,7 @@ x_tres:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	add $s0, $s0, 792
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop	
 x_cuatro:
 	lui $s0, 0x1001
@@ -2144,7 +2144,7 @@ x_cuatro:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	add $s0, $s0, 116	
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop
 x_cinco:
 	lui $s0, 0x1001
@@ -2157,7 +2157,7 @@ x_cinco:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	add $s0, $s0, 452
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop
 x_seis:
 	lui $s0, 0x1001
@@ -2170,7 +2170,7 @@ x_seis:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	add $s0, $s0, 792
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop	
 x_siete:
 	lui $s0, 0x1001
@@ -2183,7 +2183,7 @@ x_siete:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	addi $s0, $s0, 116
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop
 x_ocho:
 	lui $s0, 0x1001
@@ -2196,7 +2196,7 @@ x_ocho:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	add $s0, $s0, 452
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop
 x_nueve:
 	lui $s0, 0x1001
@@ -2209,24 +2209,24 @@ x_nueve:
 	add $s0, $s0, $s3
 	#HORIZONTAL
 	add $s0, $s0, 792
-	b primeira_linha
+	b pintarPrimeraLineaX
 	nop
 	
-primeira_linha:
+pintarPrimeraLineaX:
 	addi $s0, $s0, 1024
 	addi $s0, $s0, 4
 	sw $s5, 0($s0)
 	addi $s6, $s6, 1
-	bne $s6, 30, primeira_linha
+	bne $s6, 30, pintarPrimeraLineaX
 	nop
 	subu $s0, $s0, 120
 	ori $s6, $0, 0
-segunda_linha:
+pintarSegundaLineaX:
 	sub $s0, $s0, 1024
 	addi $s0, $s0, 4
 	sw $s5, 0($s0)
 	addi $s6, $s6, 1	
-	bne $s6, 30, segunda_linha
+	bne $s6, 30, pintarSegundaLineaX
 	nop
 	jr $ra
 	nop
@@ -2242,7 +2242,7 @@ circulo_uno:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 
 circulo_dos:
@@ -2256,7 +2256,7 @@ circulo_dos:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 circulo_tres:
 	lui $s0, 0x1001
@@ -2269,7 +2269,7 @@ circulo_tres:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 circulo_cuatro:
 	lui $s0, 0x1001
@@ -2282,7 +2282,7 @@ circulo_cuatro:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 circulo_cinco:
 	lui $s0, 0x1001
@@ -2295,7 +2295,7 @@ circulo_cinco:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 circulo_seis:
 	lui $s0, 0x1001
@@ -2308,7 +2308,7 @@ circulo_seis:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 circulo_siete:
 	lui $s0, 0x1001
@@ -2321,7 +2321,7 @@ circulo_siete:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 circulo_ocho:
 	lui $s0, 0x1001
@@ -2334,7 +2334,7 @@ circulo_ocho:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 circulo_nueve:
 	lui $s0, 0x1001
@@ -2347,79 +2347,79 @@ circulo_nueve:
 	mult $s7, $t0
 	mflo $s3
 	add $s0, $s0, $s3
-	b desenhar_y
+	b pintarCirculo
 	nop
 	
-desenhar_y:	
-	segunda_parte:
+pintarCirculo:	
+	segundaParte:
 		addi $s0, $s0, 108
 		addi $s0, $s0, 30720
 		li $s6, 0
-	segunda_linha_h:
+	segundaLineaH:
 		sw $s5, 0($s0)
 		subu $s0, $s0, 4
 		addi $s6, $s6, 1
-		bne $s6, 15, segunda_linha_h
+		bne $s6, 15, segundaLineaH
 		nop
-	terceira_parte:
+	terceraParte:
 		ori $s6, $0, 0
-	primeira_diagonal:
+	primeraDiagonal:
 		sw $s5, 0($s0)
 		subu $s0, $s0, 1024
 		sub $s0, $s0, 4
 		addi $s6, $s6, 1
-		bne $s6, 9, primeira_diagonal
+		bne $s6, 9, primeraDiagonal
 		nop
-	quarta_parte:
+	cuartaParte:
 		ori $s6, $0, 0
-	primeira_linha_v:
+	primeraLineaV:
 		sw $s5, 0($s0)	
 		subu $s0, $s0, 1024
 		addi $s6, $s6, 1
-		bne $s6, 15, primeira_linha_v
+		bne $s6, 15, primeraLineaV
 		nop
-	quinta_parte:
+	quintaParte:
 		ori $s6, $0, 0
-	segunda_diagonal:
+	segundaDiagonal:
 		sw $s5, 0($s0)
 		addi $s0, $s0, 4
 		subu $s0, $s0, 1024
 		addi $s6, $s6, 1
-		bne $s6, 9, segunda_diagonal
+		bne $s6, 9, segundaDiagonal
 		nop
-	sexta_parte:
+	sextaParte:
 		ori $s6, $0, 0
-	segunda_linha_ho:
+	segundaLineaHo:
 		sw $s5, 0($s0)
 		addi $s0, $s0, 4
 		addi $s6, $s6, 1
-		bne $s6, 15, segunda_linha_ho
+		bne $s6, 15, segundaLineaHo
 		nop
-	setima_parte:
+	septimaParte:
 		ori $s6, $0, 0
-	terceira_diagonal:
+	terceraDiagonal:
 		sw $s5, 0($s0)
 		addi $s0, $s0, 4
 		addi $s0, $s0, 1024
 		addi $s6, $s6, 1
-		bne $s6, 9, terceira_diagonal
+		bne $s6, 9, terceraDiagonal
 		nop
-	oitava_parte:
+	octavaParte:
 		ori $s6, $0, 0
-	segunda_vertical:
+	segundaVertical:
 		sw $s5, 0($s0)
 		addi $s0, $s0, 1024
 		addi $s6, $s6, 1
-		bne $s6, 15, segunda_vertical
+		bne $s6, 15, segundaVertical
 		nop
-	nona_parte:
+	novenaParte:
 		ori $s6, $0, 0
-	quarta_diagonal:
+	cuartaDiagonal:
 		sw $s5, 0($s0)
 		addi $s0, $s0, 1024
 		subu $s0, $s0, 4
 		addi $s6, $s6, 1
-		bne $s6, 9, quarta_diagonal
+		bne $s6, 9, cuartaDiagonal
 		nop
 		
 		jr $ra
