@@ -2036,7 +2036,7 @@ imprimirTablaGUI:
 		bne $s6, 256, pintarLineaHorizontal1
 		nop
 	
-	#Muda a posição para a segunda linha
+	#ir a posición para la segunda línea
 	lui $s0, 0x1001
 	li $s3, 1024
 	li $s4, 170
@@ -2055,7 +2055,7 @@ imprimirTablaGUI:
 		bne $s6, 256, pintarLineaHorizontal2
 		nop
 	
-	# Desenha linhas verticais
+	# ahora pintar las líneas verticales
 	lui $s0, 0x1001
 	li $s4, 0
 	mult $s3, $s4
