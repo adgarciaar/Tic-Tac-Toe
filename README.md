@@ -1,6 +1,6 @@
-# TriquiMIPS
+# Tic-Tac-Toe_MIPS
 
-Triqui en MIPS
+Tic-Tac-Toe en MIPS
 
 ## Built With
 
