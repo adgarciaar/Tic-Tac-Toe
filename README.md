@@ -1,6 +1,6 @@
-# Tic-Tac-Toe_MIPS
+# Tic-Tac-Toe MIPS
 
-Tic-Tac-Toe en MIPS
+Tic-Tac-Toe created using MIPS
 
 ## Built With
 
